@@ -123,6 +123,91 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 安全设置卡片 -->
+            <div class="profile-card security-section">
+                <div class="card-header">
+                    <el-icon class="header-icon">
+                        <Lock />
+                    </el-icon>
+                    <h2>安全设置</h2>
+                </div>
+                <div class="card-content">
+                    <div class="security-grid">
+                        <!-- 密码修改部分 -->
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="flex items-center gap-2">
+                                    <el-icon class="text-purple-600">
+                                        <Lock />
+                                    </el-icon>
+                                    <h3 class="text-lg font-medium">修改密码</h3>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">建议定期更换密码，确保账号安全</p>
+                            </div>
+                            <el-form :model="passwordForm" class="security-form">
+                                <el-form-item>
+                                    <el-input v-model="passwordForm.currentPassword" type="password" placeholder="当前密码"
+                                        :prefix-icon="Lock" show-password class="security-input" />
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-input v-model="passwordForm.newPassword" type="password" placeholder="新密码"
+                                        :prefix-icon="Lock" show-password class="security-input" />
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-input v-model="passwordForm.confirmPassword" type="password" placeholder="确认新密码"
+                                        :prefix-icon="Lock" show-password class="security-input" />
+                                </el-form-item>
+                                <el-button type="primary" @click="changePassword" class="security-button">
+                                    <el-icon class="mr-1">
+                                        <Check />
+                                    </el-icon>
+                                    确认修改
+                                </el-button>
+                            </el-form>
+                        </div>
+
+                        <!-- 邮箱验证部分 -->
+                        <div class="security-item">
+                            <div class="security-header">
+                                <div class="flex items-center gap-2">
+                                    <el-icon class="text-purple-600">
+                                        <Message />
+                                    </el-icon>
+                                    <h3 class="text-lg font-medium">邮箱验证</h3>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">验证邮箱以提升账号安全性</p>
+                            </div>
+                            <div class="email-verify-content">
+                                <div class="verify-status">
+                                    <el-icon :class="[
+                                        'status-icon',
+                                        userInfo.isEmailVerified ? 'text-green-500' : 'text-orange-500'
+                                    ]">
+                                        <CircleCheck v-if="userInfo.isEmailVerified" />
+                                        <Warning v-else />
+                                    </el-icon>
+                                    <div class="status-info">
+                                        <span class="text-gray-700 dark:text-gray-200">{{ userInfo.email }}</span>
+                                        <span class="text-sm"
+                                            :class="userInfo.isEmailVerified ? 'text-green-500' : 'text-orange-500'">
+                                            {{ userInfo.isEmailVerified ? '已验证' : '未验证' }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <el-button :type="userInfo.isEmailVerified ? 'success' : 'primary'"
+                                    @click="sendVerificationEmail" class="verify-button">
+                                    <el-icon class="mr-1">
+                                        <Message v-if="!userInfo.isEmailVerified" />
+                                        <Check v-else />
+                                    </el-icon>
+                                    {{ userInfo.isEmailVerified ? '已验证' : '发送验证' }}
+                                </el-button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -299,6 +384,348 @@
     .stat-label {
         @apply text-gray-400;
     }
+
+    .security-item {
+        @apply bg-gray-700;
+    }
+}
+
+.security-section {
+    @apply col-span-2;
+}
+
+.security-item {
+    @apply p-4 rounded-lg bg-gray-50;
+}
+
+.security-header {
+    @apply mb-4;
+}
+
+/* 安全设置卡片样式 */
+.security-grid {
+    @apply grid gap-6 lg:grid-cols-2;
+}
+
+.security-item {
+    @apply bg-gray-50 dark:bg-gray-700 rounded-xl p-6 transition-all duration-300;
+}
+
+.security-item:hover {
+    @apply shadow-md transform -translate-y-1;
+}
+
+.security-header {
+    @apply mb-6;
+}
+
+.security-form {
+    @apply space-y-4;
+}
+
+.security-form :deep(.el-input__wrapper) {
+    @apply bg-white dark:bg-gray-600 border-0 shadow-sm hover:shadow transition-shadow;
+}
+
+.security-form :deep(.el-input__wrapper.is-focus) {
+    @apply ring-2 ring-purple-200 dark:ring-purple-900;
+}
+
+.security-button {
+    @apply w-full flex items-center justify-center gap-1 mt-2;
+}
+
+.email-verify-content {
+    @apply mt-6 space-y-4;
+}
+
+.verify-status {
+    @apply flex items-center gap-4 p-4 bg-white dark:bg-gray-600 rounded-lg;
+}
+
+.status-icon {
+    @apply text-2xl;
+}
+
+.status-info {
+    @apply flex flex-col;
+}
+
+.verify-button {
+    @apply w-full flex items-center justify-center gap-1;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    .security-grid {
+        @apply grid-cols-1;
+    }
+}
+
+/* 暗色模式额外调整 */
+:deep(.dark) .security-item {
+    @apply bg-gray-800;
+}
+
+:deep(.dark) .verify-status {
+    @apply bg-gray-700;
+}
+
+/* Element Plus 弹窗样式重写 */
+.el-message-box {
+    @apply rounded-lg border-0 shadow-xl !important;
+}
+
+.el-message-box__header {
+    @apply p-4 border-b border-gray-100 dark:border-gray-700 !important;
+}
+
+.el-message-box__title {
+    @apply text-lg font-medium text-gray-800 dark:text-gray-200 !important;
+}
+
+.el-message-box__content {
+    @apply p-4 text-gray-600 dark:text-gray-300 !important;
+}
+
+.el-message-box__btns {
+    @apply p-4 border-t border-gray-100 dark:border-gray-700 !important;
+}
+
+/* 暗色模式适配 */
+html.dark {
+    .el-message-box {
+        @apply bg-gray-800 !important;
+    }
+
+    .el-message-box__header {
+        @apply bg-gray-800 !important;
+    }
+
+    .el-message-box__headerbtn .el-message-box__close {
+        @apply text-gray-400 hover:text-gray-200 !important;
+    }
+
+    .el-message-box__content {
+        @apply bg-gray-800 !important;
+    }
+
+    .el-message-box__btns {
+        @apply bg-gray-800 !important;
+    }
+
+    .el-button--default {
+        @apply bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600 !important;
+    }
+
+    .el-button--primary {
+        @apply bg-purple-600 text-white border-purple-600 hover:bg-purple-700 hover:border-purple-700 !important;
+    }
+}
+
+/* 消息提示样式优化 */
+.el-message {
+    @apply rounded-lg border-0 shadow-lg !important;
+}
+
+.el-message--success {
+    @apply bg-green-50 dark:bg-green-900/50 !important;
+}
+
+.el-message--warning {
+    @apply bg-yellow-50 dark:bg-yellow-900/50 !important;
+}
+
+.el-message--error {
+    @apply bg-red-50 dark:bg-red-900/50 !important;
+}
+
+.el-message--info {
+    @apply bg-blue-50 dark:bg-blue-900/50 !important;
+}
+
+/* 弹窗动画优化 */
+.el-message-box {
+    animation: messageBoxIn 0.3s ease-out !important;
+}
+
+@keyframes messageBoxIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 遮罩层样式优化 */
+.v-modal {
+    @apply backdrop-blur-sm bg-black/50 !important;
+}
+
+/* 弹窗容器样式 */
+.el-message-box__wrapper {
+    @apply flex items-center justify-center;
+}
+
+.el-message-box {
+    @apply w-[96%] max-w-md mx-auto rounded-xl border-0 shadow-2xl !important;
+    animation: dialogFadeIn 0.3s ease-out;
+}
+
+/* 弹窗头部样式 */
+.el-message-box__header {
+    @apply p-5 border-b !important;
+}
+
+.el-message-box__title {
+    @apply text-lg font-semibold !important;
+}
+
+.el-message-box__headerbtn {
+    @apply top-5 right-5 !important;
+}
+
+/* 弹窗内容样式 */
+.el-message-box__content {
+    @apply p-5 !important;
+}
+
+.el-message-box__message {
+    @apply text-base leading-relaxed !important;
+}
+
+/* 弹窗按钮样式 */
+.el-message-box__btns {
+    @apply p-5 pt-3 flex gap-3 !important;
+}
+
+.el-message-box__btns .el-button {
+    @apply flex-1 h-10 !important;
+}
+
+/* 消息提示样式 */
+.el-message {
+    @apply min-w-[300px] rounded-lg border-0 shadow-lg !important;
+    animation: messageFadeInDown 0.3s ease-out;
+}
+
+/* 暗色模式适配 */
+.dark .el-message-box {
+    @apply bg-gray-800 !important;
+}
+
+.dark .el-message-box__header {
+    @apply border-gray-700 !important;
+}
+
+.dark .el-message-box__title {
+    @apply text-gray-100 !important;
+}
+
+.dark .el-message-box__content {
+    @apply text-gray-300 !important;
+}
+
+.dark .el-message-box__btns {
+    @apply border-t border-gray-700 !important;
+}
+
+.dark .el-button--default {
+    @apply bg-gray-700 text-gray-200 border-gray-600 !important;
+}
+
+.dark .el-button--default:hover {
+    @apply bg-gray-600 border-gray-500 !important;
+}
+
+.dark .el-button--primary {
+    @apply bg-purple-600 border-purple-600 !important;
+}
+
+.dark .el-button--primary:hover {
+    @apply bg-purple-700 border-purple-700 !important;
+}
+
+/* 遮罩层样式 */
+.v-modal {
+    @apply backdrop-blur-sm !important;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* 动画效果 */
+@keyframes dialogFadeIn {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -30px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes messageFadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -100%, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 消息类型样式 */
+.el-message--success {
+    @apply bg-green-50 border-l-4 border-green-500 !important;
+}
+
+.el-message--warning {
+    @apply bg-yellow-50 border-l-4 border-yellow-500 !important;
+}
+
+.el-message--error {
+    @apply bg-red-50 border-l-4 border-red-500 !important;
+}
+
+.el-message--info {
+    @apply bg-blue-50 border-l-4 border-blue-500 !important;
+}
+
+.dark .el-message {
+    @apply border-l-4 !important;
+}
+
+.dark .el-message--success {
+    @apply bg-green-900/30 !important;
+}
+
+.dark .el-message--warning {
+    @apply bg-yellow-900/30 !important;
+}
+
+.dark .el-message--error {
+    @apply bg-red-900/30 !important;
+}
+
+.dark .el-message--info {
+    @apply bg-blue-900/30 !important;
 }
 </style>
 
@@ -307,7 +734,8 @@ import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
     Camera, Message, Location, Timer, Clock, Lock,
-    Document, ChatDotRound, View, Star, User, Edit
+    Document, ChatDotRound, View, Star, User, Edit,
+    Check, CircleCheck, Warning
 } from '@element-plus/icons-vue'
 
 // 用户基本信息（增加了更多字段）
@@ -340,46 +768,92 @@ const emailVerifyForm = reactive({
 // 修改密码方法
 const changePassword = () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        ElMessage.error('两次输入的密码不一致')
+        ElMessage({
+            message: '两次输入的密码不一致',
+            type: 'error',
+            duration: 3000,
+            showClose: true,
+            center: true
+        })
         return
     }
 
-    ElMessageBox.confirm(
-        '确定要修改密码吗?',
-        '提示',
-        {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
+    ElMessageBox.confirm('确定要修改密码吗？修改后需要重新登录。', '修改密码', {
+        confirmButtonText: '确认修改',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true,
+        showClose: true,
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        beforeClose: (action, instance, done) => {
+            if (action === 'confirm') {
+                instance.confirmButtonLoading = true
+                instance.confirmButtonText = '修改中...'
+                setTimeout(() => {
+                    instance.confirmButtonLoading = false
+                    ElMessage({
+                        type: 'success',
+                        message: '密码修改成功，请重新登录',
+                        center: true,
+                        duration: 2000
+                    })
+                    passwordForm.currentPassword = ''
+                    passwordForm.newPassword = ''
+                    passwordForm.confirmPassword = ''
+                    done()
+                }, 1000)
+            } else {
+                done()
+            }
         }
-    ).then(() => {
-        // 这里添加实际的密码修改逻辑
-        ElMessage.success('密码修改成功')
-
-        // 重置表单
-        passwordForm.currentPassword = ''
-        passwordForm.newPassword = ''
-        passwordForm.confirmPassword = ''
     }).catch(() => {
-        ElMessage.info('已取消密码修改')
+        ElMessage({
+            type: 'info',
+            message: '已取消密码修改',
+            center: true
+        })
     })
 }
 
 // 发送验证邮件
 const sendVerificationEmail = () => {
     ElMessageBox.confirm(
-        `确定要向 ${emailVerifyForm.email} 发送验证邮件吗?`,
+        `确定要向 ${emailVerifyForm.email} 发送验证邮件吗？`,
         '发送验证邮件',
         {
-            confirmButtonText: '确定',
+            confirmButtonText: '发送',
             cancelButtonText: '取消',
-            type: 'info'
+            type: 'info',
+            center: true,
+            showClose: true,
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
+            beforeClose: (action, instance, done) => {
+                if (action === 'confirm') {
+                    instance.confirmButtonLoading = true
+                    instance.confirmButtonText = '发送中...'
+                    setTimeout(() => {
+                        instance.confirmButtonLoading = false
+                        ElMessage({
+                            type: 'success',
+                            message: '验证邮件已发送，请查收',
+                            center: true,
+                            duration: 2000
+                        })
+                        done()
+                    }, 1000)
+                } else {
+                    done()
+                }
+            }
         }
-    ).then(() => {
-        // 这里添加实际的发送验证邮件逻辑
-        ElMessage.success('验证邮件已发送')
-    }).catch(() => {
-        ElMessage.info('已取消发送')
+    ).catch(() => {
+        ElMessage({
+            type: 'info',
+            message: '已取消发送',
+            center: true
+        })
     })
 }
 

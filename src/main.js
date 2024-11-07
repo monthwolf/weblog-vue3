@@ -2,6 +2,8 @@ import '@/assets/main.css'
 import 'animate.css'
 import 'nprogress/nprogress.css'
 import '@/styles/animations.css'
+import '@/styles/dark-mode.css'
+import { useTheme } from '@/config/theme'
 
 import * as ElementPlusIconVue from '@element-plus/icons-vue'
 import { createApp } from 'vue'
@@ -47,3 +49,6 @@ app.use(VMdPreview)
 
 // 挂载路由
 app.use(router).mount('#app')
+
+const { initTheme } = useTheme()
+initTheme() // 初始化主题

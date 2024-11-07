@@ -1,5 +1,5 @@
 <template>
-    <el-container class="admin-container">
+    <el-container class="admin-container" :class="{ 'dark': isDark }">
         <!-- 移动端遮罩层 -->
         <div class="mobile-mask" v-if="isMobile && !isCollapse" @click="isCollapse = true"></div>
 
@@ -32,11 +32,17 @@
                 <f-app-footer :is-mobile="isMobile" />
             </el-footer>
         </el-container>
+        <!-- 现有的布局内容 -->
+        <ThemeToggle />
     </el-container>
 </template>
 
 <script setup>
 import { ref, watch, onMounted, onBeforeUnmount, computed, provide, shallowRef } from 'vue'
+import { useTheme } from '@/config/theme'
+import ThemeToggle from '@/components/common/ThemeToggle.vue'
+
+const { isDark } = useTheme()
 import FAppAside from '@/components/admin/FAppAside.vue'
 import FAppHeader from '@/components/admin/FAppHeader.vue'
 import FAppFooter from '@/components/admin/FAppFooter.vue'
@@ -168,9 +174,14 @@ provide('addView', (menu) => {
 }
 
 .admin-container {
-    height: 100vh;
     position: relative;
     overflow-x: hidden;
+    background-color: theme('backgroundColor.admin.light');
+    transition: background-color 0.3s ease;
+}
+
+.dark .admin-container {
+    background-color: theme('backgroundColor.admin.dark');
 }
 
 .mobile-mask {

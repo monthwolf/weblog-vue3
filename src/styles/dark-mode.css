@@ -1,0 +1,75 @@
+/* 暗色模式全局样式 */
+html.dark {
+    color-scheme: dark;
+}
+
+/* Element Plus 暗色模式覆盖 */
+html.dark {
+    --el-bg-color: #1a1a1a;
+    --el-bg-color-overlay: #242424;
+    --el-text-color-primary: #e5eaf3;
+    --el-text-color-regular: #cfd3dc;
+    --el-text-color-secondary: #a3a6ad;
+    --el-border-color: #4c4d4f;
+    --el-border-color-light: #363637;
+    --el-fill-color-blank: #242424;
+    --el-mask-color: rgba(0, 0, 0, 0.8);
+    --el-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* 后台布局暗色模式 */
+.dark .admin-container {
+    background-color: theme("backgroundColor.admin.dark");
+}
+
+.dark .el-card {
+    background-color: #242424;
+    border-color: var(--el-border-color);
+}
+
+.dark .el-table {
+    background-color: #242424;
+    color: var(--el-text-color-regular);
+}
+
+.dark .el-table th,
+.dark .el-table tr {
+    background-color: #242424;
+}
+
+.dark .el-table--striped .el-table__body tr.el-table__row--striped td {
+    background-color: #1a1a1a;
+}
+
+.dark .el-pagination {
+    background-color: #242424;
+}
+
+/* 表单元素暗色模式 */
+.dark .el-input__wrapper,
+.dark .el-textarea__wrapper {
+    background-color: #242424;
+}
+
+.dark .el-select-dropdown {
+    background-color: #242424;
+    border-color: var(--el-border-color);
+}
+
+.dark .el-select-dropdown__item:hover {
+    background-color: #363637;
+}
+
+/* 其他组件暗色模式 */
+.dark .el-menu {
+    background-color: #242424;
+    border-color: var(--el-border-color);
+}
+
+.dark .el-menu-item:hover {
+    background-color: #363637;
+}
+
+.dark .el-menu-item.is-active {
+    background-color: var(--el-color-primary-dark-2);
+}
