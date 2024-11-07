@@ -1,0 +1,156 @@
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 缩放动画 */
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 滑入动画 */
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 上浮动画 */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* 呼吸效果 */
+@keyframes breathe {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 旋转动画 */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 波纹效果 */
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(var(--el-color-primary-rgb), 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 20px rgba(var(--el-color-primary-rgb), 0);
+    }
+}
+
+/* 闪光效果 */
+@keyframes shine {
+    from {
+        background-position: -200% center;
+    }
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* 通用动画类 */
+.animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-zoomIn {
+    animation: zoomIn 0.5s ease-out forwards;
+}
+
+.animate-slideInRight {
+    animation: slideInRight 0.5s ease-out forwards;
+}
+
+.animate-floatUp {
+    animation: floatUp 3s ease-in-out infinite;
+}
+
+.animate-breathe {
+    animation: breathe 3s ease-in-out infinite;
+}
+
+.animate-rotate {
+    animation: rotate 2s linear infinite;
+}
+
+.animate-ripple {
+    animation: ripple 1.5s ease-out infinite;
+}
+
+.animate-shine {
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shine 2s linear infinite;
+}
+
+/* 动画延迟类 */
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.delay-400 {
+    animation-delay: 0.4s;
+}
+
+.delay-500 {
+    animation-delay: 0.5s;
+}
+
+/* 响应式动画调整 */
+@media screen and (max-width: 768px) {
+    .animate-fadeIn,
+    .animate-zoomIn,
+    .animate-slideInRight {
+        animation-duration: 0.3s;
+    }
+}

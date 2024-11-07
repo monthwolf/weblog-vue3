@@ -1,0 +1,43 @@
+{
+  "name": "weblog-vue3",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@kangc/v-md-editor": "^2.3.18",
+    "@vueuse/integrations": "^11.2.0",
+    "animate.css": "^4.1.1",
+    "axios": "^1.7.7",
+    "codemirror": "^5.65.18",
+    "echarts": "^5.5.1",
+    "element-plus": "^2.8.6",
+    "flowbite": "^2.5.2",
+    "highlight.js": "^11.10.0",
+    "markdown-it": "^14.1.0",
+    "nprogress": "^0.2.0",
+    "pinia": "^2.2.6",
+    "prismjs": "^1.29.0",
+    "universal-cookie": "^7.2.2",
+    "vue": "^3.5.12",
+    "vue-countup-v3": "^1.4.2",
+    "vue-echarts": "^7.0.3",
+    "vue-router": "^4.4.5",
+    "weblog-vue3": "file:"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.1.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "unplugin-auto-import": "^0.18.3",
+    "unplugin-vue-components": "^0.27.4",
+    "vite": "^5.4.8",
+    "vite-plugin-vue-devtools": "^7.4.6"
+  }
+}
