@@ -26,8 +26,9 @@
             </el-tooltip>
             <el-dropdown trigger="click">
                 <span class="user-info">
-                    <el-avatar :size="isMobile ? 28 : 32" :src="avatar" />
-                    <span class="username" v-if="!isMobile">管理员</span>
+                    <el-avatar :size="isMobile ? 28 : 32"
+                        :src="userStore.userInfo.avatar || getAssetsFile('default-avatar.png')" />
+                    <span class="username" v-if="!isMobile">{{ userStore.userInfo.username }}</span>
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -44,7 +45,9 @@
 import { ref, defineProps, defineEmits } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useFullscreen } from '@vueuse/core'
-
+import { useUserStore } from '@/stores/user'
+import { showMessage, showModel } from '@/composables/utils'
+import { getAssetsFile } from '@/composables/utils'
 
 const props = defineProps({
     isCollapse: Boolean,
@@ -52,9 +55,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:isCollapse'])
+const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const avatar = ref('')
 const { isFullscreen, toggle } = useFullscreen()
 const refresh = () => {
     console.log('刷新')
@@ -71,7 +74,14 @@ const handleCommand = (command) => {
             router.push('/admin/settings/profile')
             break
         case 'logout':
-            // 处理退出登录逻辑
+            showModel('确定要退出登录吗？').then(() => {
+                // 处理退出登录逻辑
+                userStore.logout()
+                showMessage('退出登录成功').then(() => {
+                    // 跳转登录页
+                    router.push('/login')
+                })
+            })
             break
     }
 }

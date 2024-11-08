@@ -3,7 +3,7 @@
         <!-- 欢迎区域 -->
         <div class="welcome-section">
             <div class="welcome-content animate__animated animate__fadeInDown">
-                <h1>欢迎回来，{{ userInfo.nickname }}</h1>
+                <h1>欢迎回来，{{ userStore.userInfo.username }}</h1>
                 <p class="subtitle">
                     <span>{{ currentDate }}</span>
                     <el-divider direction="vertical" />
@@ -22,7 +22,7 @@
             </div>
             <div class="user-card animate__animated animate__fadeInRight">
                 <div class="avatar-wrapper">
-                    <el-avatar :size="80" :src="userInfo.avatar">
+                    <el-avatar :size="80" :src="userStore.userInfo.avatar">
                         <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
                     </el-avatar>
                     <div class="user-status">
@@ -30,13 +30,13 @@
                     </div>
                 </div>
                 <div class="user-info">
-                    <h3>{{ userInfo.nickname }}</h3>
-                    <p>{{ userInfo.role }}</p>
+                    <h3>{{ userStore.userInfo.username }}</h3>
+                    <p>{{ userStore.userInfo.role }}</p>
                     <div class="last-login">
                         <el-icon>
                             <Timer />
                         </el-icon>
-                        <span>上次登录：{{ userInfo.lastLogin }}</span>
+                        <span>上次登录：{{ userStore.userInfo.lastLogin }}</span>
                     </div>
                 </div>
             </div>
@@ -163,7 +163,6 @@
 
 <script setup>
 import { ref, computed, inject, reactive, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -176,6 +175,8 @@ import {
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import CountUp from 'vue-countup-v3'
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
 
 use([
     CanvasRenderer,
@@ -187,17 +188,8 @@ use([
     GridComponent
 ])
 
-const router = useRouter()
-
 // 注入 addView 方法
 const addView = inject('addView')
-
-// 用户信息
-const userInfo = ref({
-    nickname: '管理员',
-    avatar: '',
-    lastLogin: '2024-01-15 10:00:00'
-})
 
 // 当前日期和问候语
 const currentDate = computed(() => {
@@ -445,13 +437,6 @@ const recentActivities = [
 <style scoped>
 .dashboard {
     animation: fadeIn 0.8s ease-out;
-    background-color: var(--el-bg-color-page);
-    color: var(--el-text-color-primary);
-}
-
-:deep(.dark) .dashboard {
-    background-color: #1f1f1f;
-    color: #e0e0e0;
 }
 
 .welcome-section {

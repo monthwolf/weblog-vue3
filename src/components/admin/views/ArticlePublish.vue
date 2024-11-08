@@ -217,12 +217,6 @@ const publishArticle = async () => {
 .article-publish {
     height: 100%;
     background-color: var(--el-bg-color-page);
-    color: var(--el-text-color-primary);
-}
-
-:deep(.dark) .article-publish {
-    background-color: #1f1f1f;
-    color: #e0e0e0;
 }
 
 .publish-header {
@@ -285,15 +279,23 @@ const publishArticle = async () => {
 }
 
 :deep(.v-md-editor) {
-    border: none !important;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
 }
 
 :deep(.v-md-editor__toolbar) {
-    border-bottom: 1px solid var(--el-border-color-light) !important;
+    background-color: var(--el-bg-color-page);
+    border-bottom: 1px solid var(--el-border-color-light);
 }
 
 :deep(.v-md-editor__editor-wrapper) {
-    padding: 16px !important;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.v-md-editor__preview) {
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
 }
 
 .setting-section {
@@ -364,47 +366,35 @@ const publishArticle = async () => {
 
 /* 代码块样式 */
 :deep(.v-md-editor__preview pre) {
-    padding: 1em;
-    border-radius: 4px;
     background-color: #282c34 !important;
+    color: #abb2bf;
 }
 
 :deep(.v-md-editor__preview code) {
-    padding: 0.2em 0.4em;
-    margin: 0;
-    font-size: 85%;
-    border-radius: 3px;
-    font-family: 'Fira Code', monospace;
+    background-color: #282c34 !important;
+    color: #abb2bf;
 }
 
 /* 代码行号样式 */
 :deep(.line-numbers-mode) {
-    padding-left: 3.5em;
-}
-
-:deep(.line-numbers-mode .line-numbers) {
     color: #999;
 }
 
 /* 代码复制按钮样式 */
 :deep(.copy-code-btn) {
-    padding: 4px 8px;
-    font-size: 12px;
-    border-radius: 4px;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
 }
 
 /* 表情面板样式 */
 :deep(.v-md-emoji-picker) {
-    border-radius: 4px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
 }
 
 /* 任务列表样式 */
 :deep(.v-md-todo-list) {
-    margin: 1em 0;
-}
-
-:deep(.v-md-todo-list input[type="checkbox"]) {
-    margin-right: 0.5em;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
 }
 </style>

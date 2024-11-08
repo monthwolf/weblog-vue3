@@ -15,7 +15,7 @@
                             :on-progress="handleAvatarProgress" :on-success="handleAvatarSuccess">
                             <div class="avatar-wrapper">
                                 <img v-if="userInfo.avatar" :src="userInfo.avatar" class="avatar" />
-                                <img v-else :src="defaultAvatar" class="avatar" />
+                                <img v-else :src="getAssetsFile('default-avatar.png')" class="avatar" />
                                 <div class="avatar-hover">
                                     <el-icon>
                                         <Camera />
@@ -24,12 +24,14 @@
                                 </div>
                             </div>
                         </el-upload>
-                        <div class="user-role">{{ userInfo.role }}</div>
+                        <div class="flex flex-wrap gap-2 w-full justify-center">
+                            <div class="user-role" v-for="role in userInfo.roles" :key="role">{{ role }}</div>
+                        </div>
                     </div>
                     <div class="info-list">
                         <div class="info-item">
                             <span class="label">账号</span>
-                            <span class="value">{{ userInfo.nickname }}</span>
+                            <span class="value">{{ userInfo.username }}</span>
                         </div>
                         <div class="info-item">
                             <span class="label">邮箱</span>
@@ -55,7 +57,7 @@
                     <el-form :model="profileForm" label-position="top">
                         <div class="form-grid">
                             <el-form-item label="昵称">
-                                <el-input v-model="profileForm.nickname" />
+                                <el-input v-model="profileForm.username" />
                             </el-form-item>
                             <el-form-item label="邮箱">
                                 <el-input v-model="profileForm.email" />
@@ -145,16 +147,25 @@
                                 </div>
                                 <p class="text-sm text-gray-500 mt-1">建议定期更换密码，确保账号安全</p>
                             </div>
-                            <el-form :model="passwordForm" class="security-form">
-                                <el-form-item>
+                            <el-form :model="passwordForm" :rules="passwordRules" ref="passwordFormRef"
+                                class="security-form">
+                                <el-form-item prop="currentPassword">
                                     <el-input v-model="passwordForm.currentPassword" type="password" placeholder="当前密码"
                                         :prefix-icon="Lock" show-password class="security-input" />
                                 </el-form-item>
-                                <el-form-item>
+                                <el-form-item prop="newPassword">
                                     <el-input v-model="passwordForm.newPassword" type="password" placeholder="新密码"
-                                        :prefix-icon="Lock" show-password class="security-input" />
+                                        :prefix-icon="Lock" show-password class="security-input"
+                                        @input="checkPasswordStrength" />
+                                    <div class="password-strength-container w-full">
+                                        <div class="password-strength-text h-full">{{ passwordStrengthText }}</div>
+                                        <div class="password-strength-bar w-full">
+                                            <div :style="{ width: passwordStrengthPercentage + '%', background: passwordStrengthGradient }"
+                                                class="strength-bar"></div>
+                                        </div>
+                                    </div>
                                 </el-form-item>
-                                <el-form-item>
+                                <el-form-item prop="confirmPassword">
                                     <el-input v-model="passwordForm.confirmPassword" type="password" placeholder="确认新密码"
                                         :prefix-icon="Lock" show-password class="security-input" />
                                 </el-form-item>
@@ -215,13 +226,6 @@
 <style lang="scss" scoped>
 .user-profile {
     @apply min-h-screen bg-gray-50 p-4 md:p-6;
-    background-color: var(--el-bg-color-page);
-    color: var(--el-text-color-primary);
-}
-
-:deep(.dark) .user-profile {
-    background-color: #1f1f1f;
-    color: #e0e0e0;
 }
 
 .profile-container {
@@ -253,7 +257,7 @@
     @apply p-6;
 }
 
-/* 头像部分样式 */
+/* 头像部分���式 */
 .avatar-section {
     @apply flex flex-col items-center gap-4 mb-6;
 }
@@ -478,7 +482,7 @@
     @apply bg-gray-700;
 }
 
-/* Element Plus 弹窗样式重写 */
+/* Element Plus ��窗式重写 */
 .el-message-box {
     @apply rounded-lg border-0 shadow-xl !important;
 }
@@ -734,6 +738,86 @@ html.dark {
 .dark .el-message--info {
     @apply bg-blue-900/30 !important;
 }
+
+/* 添加日间和夜间模式支持 */
+:deep(.avatar-uploader) {
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.avatar-hover) {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+:deep(.info-item .label) {
+    color: var(--el-text-color-secondary);
+}
+
+:deep(.info-item .value) {
+    color: var(--el-text-color-primary);
+}
+
+:deep(.security-item) {
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.verify-status) {
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.status-icon) {
+    color: var(--el-color-primary);
+}
+
+:deep(.verify-button) {
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+.password-strength-container {
+    // 排列文字和进度条在同一行
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    // 进度条和文字之间有间距
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.password-strength-text {
+    color: var(--el-text-color-secondary);
+}
+
+.security-form {
+    @apply space-y-4;
+}
+
+.el-progress {
+    margin-top: 5px;
+    height: 8px;
+    border-radius: 4px;
+}
+
+.el-progress-bar__inner {
+    transition: width 0.3s ease;
+}
+
+.password-strength-bar {
+    // margin-top: 5px;
+    // width: 100%;
+    height: 5px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    transition: width 0.3s ease, background 0.3s ease;
+}
 </style>
 
 <script setup>
@@ -744,21 +828,18 @@ import {
     Document, ChatDotRound, View, Star, User, Edit,
     Check, CircleCheck, Warning
 } from '@element-plus/icons-vue'
+import { useUserStore } from '@/stores/user'
+import { changePassword as changePasswordApi } from '@/api/admin/user'
+import { showMessage } from '@/composables/utils'
+import { useRouter } from 'vue-router'
+import { getAssetsFile } from '@/composables/utils'
 
-// 用户基本信息（增加了更多字段）
-const userInfo = reactive({
-    nickname: '张三',
-    avatar: '',
-    role: '管理员',
-    email: 'zhangsan@example.com',
-    location: '北京市',
-    lastLogin: '2024-01-15 14:30:45',
-    registeredAt: '2023-06-01 10:00:00',
-    level: 3,
-    isVerified: true,
-    isEmailVerified: false,
-    lastUpdateTime: '2024-01-20 15:30:45'
-})
+const userStore = useUserStore()
+const router = useRouter()
+
+// 用户基本信息
+const userInfo = userStore.userInfo
+
 
 // 密码表单
 const passwordForm = reactive({
@@ -767,59 +848,106 @@ const passwordForm = reactive({
     confirmPassword: ''
 })
 
-// 邮箱验证表单
-const emailVerifyForm = reactive({
-    email: userInfo.email
-})
+// 密码表单校验规则
+const passwordRules = {
+    currentPassword: [{ required: true, message: '请输入当前密码', trigger: 'blur' }],
+    newPassword: [
+        { required: true, message: '请输入新密码', trigger: 'blur' },
+        { min: 6, message: '密码长度不能少于6位', trigger: 'blur' }
+    ],
+    confirmPassword: [
+        { required: true, message: '请确认新密码', trigger: 'blur' },
+        {
+            validator: (rule, value, callback) => {
+                if (value !== passwordForm.newPassword) {
+                    callback(new Error('两次输入的密码不一致'))
+                } else {
+                    callback()
+                }
+            }, trigger: 'blur'
+        }
+    ]
+}
+
+// 密码强度相关
+const passwordStrengthPercentage = ref(0)
+const passwordStrengthText = ref('')
+const passwordStrengthGradient = ref('')
+
+const checkPasswordStrength = () => {
+    const strength = calculatePasswordStrength(passwordForm.newPassword)
+    if (strength === 0) {
+        passwordStrengthPercentage.value = 0
+        passwordStrengthText.value = ''
+        passwordStrengthGradient.value = ''
+    } else if (strength < 2) {
+        passwordStrengthPercentage.value = 33
+        passwordStrengthText.value = '弱'
+        passwordStrengthGradient.value = 'linear-gradient(to right, #f56c6c, #f56c6c)' // 弱
+    } else if (strength < 4) {
+        passwordStrengthPercentage.value = 66
+        passwordStrengthText.value = '中'
+        passwordStrengthGradient.value = 'linear-gradient(to right, #e6a23c, #f56c6c)' // 中
+    } else {
+        passwordStrengthPercentage.value = 100
+        passwordStrengthText.value = '强'
+        passwordStrengthGradient.value = 'linear-gradient(to right, #67c23a, #e6a23c)' // 强
+    }
+}
+
+const calculatePasswordStrength = (password) => {
+    let strength = 0
+    if (password.length >= 6) strength++
+    if (/[A-Z]/.test(password)) strength++
+    if (/[a-z]/.test(password)) strength++
+    if (/[0-9]/.test(password)) strength++
+    if (/[\W_]/.test(password)) strength++
+    return strength
+}
+
+const passwordFormRef = ref(null)
 
 // 修改密码方法
 const changePassword = () => {
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-        ElMessage({
-            message: '两次输入的密码不一致',
-            type: 'error',
-            duration: 3000,
-            showClose: true,
-            center: true
-        })
-        return
-    }
+    if (!passwordFormRef.value) return
+    passwordFormRef.value.validate((valid) => {
+        if (valid) {
+            ElMessageBox.confirm('确定要修改密码吗？修改后需要重新登录。', '修改密码', {
+                confirmButtonText: '确认修改',
+                cancelButtonText: '取消',
+                type: 'warning',
+                center: true,
+                showClose: true,
+                closeOnClickModal: false,
+                closeOnPressEscape: false,
+                beforeClose: (action, instance, done) => {
+                    if (action === 'confirm') {
+                        instance.confirmButtonLoading = true
+                        instance.confirmButtonText = '修改中...'
+                        changePasswordApi(userInfo.username, passwordForm.currentPassword, passwordForm.newPassword).then((res) => {
+                            instance.confirmButtonLoading = false
+                            if (res.success) {
+                                showMessage(res.message)
+                                userStore.logout()
+                                router.push('/login')
+                            } else {
+                                showMessage(res.message, 'error')
 
-    ElMessageBox.confirm('确定要修改密码吗？修改后需要重新登录。', '修改密码', {
-        confirmButtonText: '确认修改',
-        cancelButtonText: '取消',
-        type: 'warning',
-        center: true,
-        showClose: true,
-        closeOnClickModal: false,
-        closeOnPressEscape: false,
-        beforeClose: (action, instance, done) => {
-            if (action === 'confirm') {
-                instance.confirmButtonLoading = true
-                instance.confirmButtonText = '修改中...'
-                setTimeout(() => {
-                    instance.confirmButtonLoading = false
-                    ElMessage({
-                        type: 'success',
-                        message: '密码修改成功，请重新登录',
-                        center: true,
-                        duration: 2000
-                    })
-                    passwordForm.currentPassword = ''
-                    passwordForm.newPassword = ''
-                    passwordForm.confirmPassword = ''
-                    done()
-                }, 1000)
-            } else {
-                done()
-            }
+                            }
+                            done()
+                        })
+                    } else {
+                        done()
+                    }
+                }
+            }).catch(() => {
+                ElMessage({
+                    type: 'info',
+                    message: '已取消密码修改',
+                    center: true
+                })
+            })
         }
-    }).catch(() => {
-        ElMessage({
-            type: 'info',
-            message: '已取消密码修改',
-            center: true
-        })
     })
 }
 
@@ -874,7 +1002,7 @@ const userStats = reactive({
 
 // 个人信息表单
 const profileForm = reactive({
-    nickname: userInfo.nickname,
+    username: userInfo.username,
     email: userInfo.email,
     location: [],
     bio: ''
@@ -901,7 +1029,6 @@ const locationOptions = [
 ]
 
 // 头像上传相关
-const defaultAvatar = '/default-avatar.png'
 const uploading = ref(false)
 const uploadProgress = ref(0)
 
@@ -944,7 +1071,7 @@ const saveProfile = () => {
         }
     ).then(() => {
         // 模拟保存操作
-        userInfo.nickname = profileForm.nickname
+        userInfo.username = profileForm.username
         userInfo.email = profileForm.email
         userInfo.location = profileForm.location.join(' ')
 
@@ -956,7 +1083,7 @@ const saveProfile = () => {
 
 // 重置表单
 const resetForm = () => {
-    profileForm.nickname = userInfo.nickname
+    profileForm.username = userInfo.username
     profileForm.email = userInfo.email
     profileForm.location = []
     profileForm.bio = ''

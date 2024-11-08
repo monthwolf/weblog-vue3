@@ -8,7 +8,7 @@ import { useTheme } from '@/config/theme'
 import * as ElementPlusIconVue from '@element-plus/icons-vue'
 import { createApp } from 'vue'
 import App from '@/App.vue'
-import { createPinia } from 'pinia'
+import pinia from '@/stores'
 //引入路由
 import router from '@/router'
 import permission from '@/permission'
@@ -31,7 +31,7 @@ VMdEditor.use(githubTheme, {
 VMdPreview.use(githubTheme, {
     Hljs: hljs,
 })
-const pinia = createPinia()
+
 // 创建Vue应用实例
 const app = createApp(App)
 

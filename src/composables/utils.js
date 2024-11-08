@@ -1,4 +1,5 @@
 import nprogress from 'nprogress';
+import 'element-plus/es/components/message-box/style/css'
 import { useCookies } from '@vueuse/integrations/useCookies';
 
 // 消息提示
@@ -8,6 +9,19 @@ export function showMessage(message = '提示内容', type = 'success', customCl
         message,
         customClass,
     })
+}
+
+// 弹出确认框
+export function showModel(content = '提示内容', type = 'warning', title = '') {
+    return ElMessageBox.confirm(
+        content,
+        title,
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type,
+        }
+    )
 }
 
 // 进度条
@@ -81,6 +95,13 @@ export const menuList = [
         ]
     }
 ]
+
+// 权限映射
+export const permissionMap = {
+    "ROLE_ADMIN": "超级管理员",
+    "ROLE_USER": "普通用户",
+    "ROLE_VISITOR": "游客"
+}
 
 // cookie存取标签页
 const cookies = useCookies()

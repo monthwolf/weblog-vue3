@@ -70,6 +70,9 @@ import 'animate.css'
 import { login } from '@/api/admin/user'
 import { showMessage } from '@/composables/utils'
 import { setToken } from '@/composables/auth'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 // 添加键盘监听
 onMounted(() => {
@@ -116,6 +119,7 @@ const onSubmit = () => {
                 console.log(res)
                 if (res.success) {
                     setToken(res.data.token)
+                    userStore.setUserInfo()
                     router.push('/admin/index')
                     showMessage('登录成功')
                 } else {

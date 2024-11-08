@@ -41,7 +41,15 @@
                             d="M1 1h15M1 7h15M1 13h15" />
                     </svg>
                 </button>
-                <div class="text-gray-900 ml-1 mr-1 hover:text-blue-700" @click="$router.push('/login')">登录</div>
+                <!-- 用户名 -->
+                <div v-if="userStore.userInfo.username"
+                    class="text-gray-900 ml-1 mr-1 hover:text-blue-700 flex justify-center gap-2 items-center"
+                    @click="$router.push('/admin/index')">
+                    {{ userStore.userInfo.username }}
+                    <el-image :src="userStore.userInfo.avatar || getAssetsFile('default-avatar.png')"
+                        class="w-8 h-8 rounded-full" />
+                </div>
+                <div v-else class="text-gray-900 ml-1 mr-1 hover:text-blue-700" @click="$router.push('/login')">登录</div>
 
             </div>
             <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-search">
@@ -85,6 +93,10 @@
 <script setup>
 import { onMounted } from 'vue'
 import { initCollapses } from 'flowbite'
+import { useUserStore } from '@/stores/user'
+import { getAssetsFile } from '@/composables/utils'
+
+const userStore = useUserStore()
 
 // 初始化 flowbit 相关组件
 onMounted(() => {

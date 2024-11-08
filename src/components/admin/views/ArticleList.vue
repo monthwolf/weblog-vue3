@@ -288,13 +288,6 @@ const formatNumber = (num) => {
 .article-list {
     padding: 20px;
     min-height: 100%;
-    background-color: var(--el-bg-color-page);
-    color: var(--el-text-color-primary);
-}
-
-:deep(.dark) .article-list {
-    background-color: #1f1f1f;
-    color: #e0e0e0;
 }
 
 .search-bar {
