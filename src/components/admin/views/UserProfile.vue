@@ -212,9 +212,16 @@
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .user-profile {
     @apply min-h-screen bg-gray-50 p-4 md:p-6;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.dark) .user-profile {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
 }
 
 .profile-container {

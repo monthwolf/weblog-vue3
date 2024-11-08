@@ -217,6 +217,12 @@ const publishArticle = async () => {
 .article-publish {
     height: 100%;
     background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.dark) .article-publish {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
 }
 
 .publish-header {

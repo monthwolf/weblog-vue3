@@ -287,6 +287,13 @@ const getCountType = (count) => {
 <style scoped>
 .tags-manage {
     padding: 20px;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.dark) .tags-manage {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
 }
 
 .header-actions {

@@ -445,6 +445,13 @@ const recentActivities = [
 <style scoped>
 .dashboard {
     animation: fadeIn 0.8s ease-out;
+    background-color: var(--el-bg-color-page);
+    color: var(--el-text-color-primary);
+}
+
+:deep(.dark) .dashboard {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
 }
 
 .welcome-section {

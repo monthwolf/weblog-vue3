@@ -20,9 +20,7 @@
                     <!-- 为页面使用过渡动画 -->
                     <router-view v-slot="{ Component }">
                         <keep-alive :max="10">
-                            <transition name="fade">
-                                <component :is="Component" />
-                            </transition>
+                            <component :is="Component" />
                         </keep-alive>
                     </router-view>
                 </div>
@@ -38,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount, computed, provide, shallowRef } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, provide, shallowRef } from 'vue'
 import { useTheme } from '@/config/theme'
 import ThemeToggle from '@/components/common/ThemeToggle.vue'
 
@@ -48,7 +46,6 @@ import FAppHeader from '@/components/admin/FAppHeader.vue'
 import FAppFooter from '@/components/admin/FAppFooter.vue'
 import FTagList from '@/components/admin/FTagList.vue'
 import { useRoute } from 'vue-router'
-import { menuList } from '@/composables/utils'
 import router from '@/router'
 
 const route = useRoute()
