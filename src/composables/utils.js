@@ -119,3 +119,41 @@ export const setTabList = (tabList) => {
     }
 }
 
+// 通用排序
+export const sortUtil = (a, b, sortKey, defaultKey, sortType = 'asc') => {
+    if (a[sortKey] !== b[sortKey]) {
+        return sortType === 'asc' ? a[sortKey] - b[sortKey] : b[sortKey] - a[sortKey]
+    } else {
+        return sortType === 'asc' ? a[defaultKey].localeCompare(b[defaultKey]) : b[defaultKey].localeCompare(a[defaultKey])
+    }
+}
+
+export const shortcuts = [
+    {
+        text: '最近一周',
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            return [start, end]
+        }
+    },
+    {
+        text: '最近一个月',
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            return [start, end]
+        }
+    },
+    {
+        text: '最近三个月',
+        value: () => {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            return [start, end]
+        }
+    }
+]

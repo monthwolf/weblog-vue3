@@ -160,7 +160,7 @@ import {
     Search, RefreshRight, Plus, Document,
     Edit, View, Delete, Timer, FolderOpened
 } from '@element-plus/icons-vue'
-import { formatDate, getTimeAgo, isToday } from '@/utils/date'
+import { formatDate, getTimeAgo, isToday } from '@/composables/date'
 
 const loading = ref(false)
 const currentPage = ref(1)
@@ -445,5 +445,95 @@ const formatNumber = (num) => {
     align-items: center;
     gap: 4px;
     color: var(--el-text-color-secondary);
+}
+
+/* 现有样式保持不变，添加以下暗色模式样式 */
+.dark {
+    .article-list {
+        @apply bg-gray-900;
+    }
+
+    .search-bar {
+        @apply bg-gray-800 border-gray-700;
+    }
+
+    .table-container {
+        @apply bg-gray-800;
+    }
+
+    .table-card {
+        @apply bg-gray-800 border-gray-700;
+
+        &:hover {
+            @apply shadow-lg shadow-gray-900/50;
+        }
+    }
+
+    .title-cell {
+        .title-text {
+            @apply text-blue-400;
+
+            &:hover {
+                @apply text-blue-300;
+            }
+        }
+    }
+
+    .time-cell {
+        @apply text-gray-400;
+    }
+
+    .views-cell {
+        @apply text-gray-400;
+    }
+
+    :deep(.el-table) {
+        @apply bg-gray-800 text-gray-300;
+
+        th.el-table__cell {
+            @apply bg-gray-700;
+        }
+
+        .el-table__cell {
+            @apply border-gray-700;
+        }
+
+        tr:hover>td.el-table__cell {
+            @apply bg-gray-700;
+        }
+    }
+
+    :deep(.el-pagination) {
+        @apply bg-gray-800 text-gray-300;
+
+        .btn-prev,
+        .btn-next {
+            @apply bg-gray-700;
+        }
+
+        .el-pager li {
+            @apply bg-gray-700 text-gray-300;
+
+            &.active {
+                @apply bg-purple-600 text-white;
+            }
+        }
+    }
+
+    :deep(.el-input__wrapper) {
+        @apply bg-gray-700 border-gray-600;
+    }
+
+    :deep(.el-select__popper) {
+        @apply bg-gray-700 border-gray-600;
+
+        .el-select-dropdown__item {
+            @apply text-gray-300;
+
+            &.hover {
+                @apply bg-gray-600;
+            }
+        }
+    }
 }
 </style>

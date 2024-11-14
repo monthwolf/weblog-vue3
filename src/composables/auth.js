@@ -11,12 +11,12 @@ export function getToken() {
 
 // 设置用户token
 export function setToken(token) {
-    cookies.set(TOKEN_KEY, token)
+    cookies.set(TOKEN_KEY, token, { path: '/' })
 }
 
 // 删除用户token
 export function clearToken() {
-    cookies.remove(TOKEN_KEY)
+    cookies.remove(TOKEN_KEY, { path: '/' })
 }
 
 

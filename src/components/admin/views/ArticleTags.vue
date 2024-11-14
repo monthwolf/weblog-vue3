@@ -3,7 +3,7 @@
         <div class="header-actions">
             <div class="left">
                 <h2 class="title">标签管理</h2>
-                <p class="subtitle">共 {{ tagsList.length }} 个标签</p>
+                <p class="subtitle">共 {{ totalTags }} 个标签</p>
             </div>
             <div class="action-buttons animate__animated animate__fadeInRight">
                 <el-button-group>
@@ -20,24 +20,40 @@
                 </el-button-group>
             </div>
         </div>
-
+        <div class="search-bar">
+            <el-input v-model="searchName" placeholder="搜索标签名称" clearable>
+                <template #prefix>
+                    <el-icon>
+                        <Search />
+                    </el-icon>
+                </template>
+            </el-input>
+            <el-date-picker v-model="searchDateRange" type="daterange" placeholder="选择创建日期" value-format="YYYY-MM-DD"
+                start-placeholder="开始日期" end-placeholder="结束日期" class="date-picker" :shortcuts="shortcuts" />
+            <el-button type="primary" @click="handleSearch">
+                <el-icon>
+                    <Search />
+                </el-icon>
+                搜索
+            </el-button>
+            <el-button @click="resetSearch">
+                <el-icon>
+                    <Refresh />
+                </el-icon>
+                重置
+            </el-button>
+        </div>
         <div class="tags-content animate__animated animate__fadeInUp animation-delay-200">
             <el-card shadow="hover" class="tags-card">
                 <el-table :data="tagsList" style="width: 100%" v-loading="loading" :stripe="true" :border="true">
                     <el-table-column prop="name" label="标签名称">
                         <template #default="{ row }">
                             <div class="tag-name">
-                                <el-tag :color="row.color" effect="plain" class="animate-breathe">
+                                <div class="color-block" :style="{ backgroundColor: row.color }"></div>
+                                <el-tag :style="getTagStyle(row.color)" effect="plain">
                                     {{ row.name }}
                                 </el-tag>
                             </div>
-                        </template>
-                    </el-table-column>
-
-                    <el-table-column prop="articleCount" label="文章数量" width="120">
-                        <template #default="{ row }">
-                            <el-badge :value="row.articleCount" :type="getCountType(row.articleCount)"
-                                class="count-badge" />
                         </template>
                     </el-table-column>
 
@@ -69,13 +85,6 @@
                                         </el-icon>
                                     </el-button>
                                 </el-tooltip>
-                                <el-tooltip content="查看文章" placement="top">
-                                    <el-button type="success" link @click="handleViewArticles(row)">
-                                        <el-icon>
-                                            <Document />
-                                        </el-icon>
-                                    </el-button>
-                                </el-tooltip>
                                 <el-tooltip content="删除标签" placement="top">
                                     <el-button type="danger" link @click="handleDelete(row)">
                                         <el-icon>
@@ -87,13 +96,17 @@
                         </template>
                     </el-table-column>
                 </el-table>
+
+                <el-pagination @current-change="handleCurrentChange" :current-page="currentPage" :page-size="pageSize"
+                    :total="totalTags" layout="total, prev, pager, next, jumper, sizes"
+                    :page-sizes="[5, 10, 20, 30, 50]" @size-change="handleSizeChange" />
             </el-card>
         </div>
 
         <!-- 新增/编辑标签对话框 -->
-        <el-dialog :title="dialogType === 'add' ? '新增标签' : '编辑标签'" v-model="dialogVisible" width="500px"
-            destroy-on-close class="tag-dialog">
-            <el-form :model="tagForm" :rules="rules" ref="formRef" label-width="100px" class="tag-form">
+        <FormDialog :title="dialogType === 'add' ? '新增标签' : '编辑标签'" v-model="dialogVisible" :model="tagForm"
+            :rules="rules" @submit="submitTag" :loading="submitting" @cancel="closeDialog">
+            <template #content>
                 <el-form-item label="标签名称" prop="name">
                     <el-input v-model="tagForm.name" placeholder="请输入标签名称" :maxlength="20" show-word-limit />
                 </el-form-item>
@@ -103,24 +116,13 @@
                         预览效果
                     </div>
                 </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="tagForm.description" type="textarea" rows="3" placeholder="请输入标签描述"
-                        :maxlength="200" show-word-limit />
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-button @click="dialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitTag" :loading="submitting">
-                        {{ dialogType === 'add' ? '新增' : '保存' }}
-                    </el-button>
-                </span>
             </template>
-        </el-dialog>
+        </FormDialog>
 
         <!-- 批量添加对话框 -->
-        <el-dialog title="批量添加标签" v-model="batchDialogVisible" width="500px" destroy-on-close>
-            <el-form :model="batchForm" ref="batchFormRef" label-width="100px">
+        <FormDialog title="批量添加标签" v-model="batchDialogVisible" :model="batchForm" @submit="submitBatchTags"
+            :rules="rules" :loading="batchSubmitting" @cancel="closeDialog">
+            <template #content>
                 <el-form-item label="标签列表" prop="tags">
                     <el-input type="textarea" v-model="batchForm.tags" rows="6" placeholder="请输入标签名称，多个标签用逗号或换行分隔" />
                     <div class="form-tip">
@@ -133,25 +135,19 @@
                         {{ tag }}
                     </el-tag>
                 </div>
-            </el-form>
-            <template #footer>
-                <span class="dialog-footer">
-                    <el-button @click="batchDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="submitBatchTags" :loading="batchSubmitting"
-                        :disabled="!recognizedTags.length">
-                        确定添加
-                    </el-button>
-                </span>
             </template>
-        </el-dialog>
+        </FormDialog>
     </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Files, Timer, Edit, Document, Delete } from '@element-plus/icons-vue'
-import { formatDate } from '@/utils/date'
+import { Plus, Files, Timer, Edit, Delete, Search, Refresh } from '@element-plus/icons-vue'
+import { shortcuts } from '@/composables/utils'
+import { getTagsList, deleteTag, updateTag, addTags, updateTagStatus } from '@/api/admin/tag'
+import { formatDate } from '@/composables/date'
+import FormDialog from '@/components/admin/common/FormDialog.vue'
 
 const loading = ref(false)
 const submitting = ref(false)
@@ -159,18 +155,28 @@ const batchSubmitting = ref(false)
 const dialogVisible = ref(false)
 const batchDialogVisible = ref(false)
 const dialogType = ref('add')
-const formRef = ref(null)
-const batchFormRef = ref(null)
+const rules = {
+    name: [{ required: true, message: '请输入标签名称', trigger: 'blur' },
+    { min: 1, max: 8, message: '长度在 1 到 8 个字符', trigger: 'blur' }
+    ],
+    color: [{ required: true, message: '请选择标签颜色', trigger: 'blur' }]
+}
 
 const tagForm = reactive({
     name: '',
     color: '#409EFF',
-    description: ''
 })
 
 const batchForm = reactive({
     tags: ''
 })
+
+const currentPage = ref(1)
+const pageSize = ref(10)
+const totalTags = ref(0)
+const tagsList = ref([])
+const searchName = ref('')
+const searchDateRange = ref([])
 
 // 预定义颜色
 const predefineColors = [
@@ -183,6 +189,9 @@ const predefineColors = [
     '#FF9800',
     '#795548'
 ]
+
+// 生成随机颜色
+const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
 // 计算已识别的标签
 const recognizedTags = computed(() => {
@@ -200,36 +209,63 @@ const removeRecognizedTag = (tag) => {
     batchForm.tags = tags.join('\n')
 }
 
-const tagsList = ref([
-    {
-        id: 1,
-        name: 'Vue3',
-        articleCount: 5,
-        createTime: '2024-01-15 10:00:00',
-        status: true,
-        color: '#409EFF'
-    },
-    {
-        id: 2,
-        name: 'JavaScript',
-        articleCount: 8,
-        createTime: '2024-01-15 10:00:00',
-        status: true,
-        color: '#67C23A'
-    }
-])
+const fetchTags = async (page = 1) => {
+    loading.value = true
+    const response = await getTagsList({ current: page, size: pageSize.value });
+    tagsList.value = response.data
+    totalTags.value = response.total
+    loading.value = false
+}
+const handleSearch = async () => {
+    loading.value = true
+    const response = await getTagsList({
+        current: currentPage.value,
+        size: pageSize.value,
+        name: searchName.value,
+        startDate: searchDateRange.value[0],
+        endDate: searchDateRange.value[1]
+    });
+    tagsList.value = response.data
+    totalTags.value = response.total
+    loading.value = false
+}
+
+const resetSearch = () => {
+    searchName.value = ''
+    searchDateRange.value = []
+    handleSearch()
+}
+
+const handleSizeChange = (size) => {
+    pageSize.value = size
+    fetchTags(currentPage.value)
+}
+
+const handleCurrentChange = (page) => {
+    currentPage.value = page
+    fetchTags(currentPage.value)
+}
+
+onMounted(() => {
+    fetchTags(currentPage.value)
+})
 
 const showAddDialog = () => {
     dialogType.value = 'add'
     dialogVisible.value = true
-    if (formRef.value) {
-        formRef.value.resetFields()
+    if (tagForm.value) {
+        resetTagForm()
     }
 }
 
 const handleBatchAdd = () => {
     batchDialogVisible.value = true
-    batchForm.tags = ''
+    resetBatchForm()
+}
+
+const closeDialog = () => {
+    dialogVisible.value = false
+    batchDialogVisible.value = false
 }
 
 const handleEdit = (row) => {
@@ -238,54 +274,86 @@ const handleEdit = (row) => {
     Object.assign(tagForm, row)
 }
 
-const handleDelete = (row) => {
+const handleDelete = async (row) => {
     ElMessageBox.confirm('确定要删除该标签吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-    }).then(() => {
+    }).then(async () => {
+        await deleteTag(row.id)
         ElMessage.success('删除成功')
+        fetchTags(currentPage.value)
     })
 }
 
-const handleStatusChange = (row, value) => {
-    ElMessage.success(`${row.name} 状态已${value ? '启用' : '禁用'}`)
-}
-
-const submitTag = async () => {
-    if (!formRef.value) return
-    await formRef.value.validate((valid) => {
-        if (valid) {
-            ElMessage.success(dialogType.value === 'add' ? '新增成功' : '更新成功')
-            dialogVisible.value = false
-        }
+const resetTagForm = () => {
+    Object.assign(tagForm, {
+        name: '',
+        color: '#409EFF',
     })
 }
 
-const submitBatchTags = () => {
+const resetBatchForm = () => {
+    Object.assign(batchForm, {
+        tags: ''
+    })
+}
+
+const handleStatusChange = async (row) => {
+    await updateTagStatus(row.id)
+    fetchTags(currentPage.value)
+}
+
+const submitTag = async (formData) => {
+    if (dialogType.value === 'add') {
+        await addTags([tagForm])
+        ElMessage.success('新增成功')
+    } else {
+        await updateTag(tagForm.id, tagForm.name, tagForm.color)
+        ElMessage.success('更新成功')
+    }
+    // 清空表单
+    resetTagForm()
+    dialogVisible.value = false
+    fetchTags(currentPage.value)
+}
+
+const submitBatchTags = async () => {
     if (!batchForm.tags.trim()) {
         ElMessage.warning('请输入标签')
         return
     }
-    const tags = batchForm.tags.split(/[,，\n]/).filter(tag => tag.trim())
+
+    const tags = recognizedTags.value.map(tag => ({ name: tag, color: getRandomColor() }));
     if (tags.length === 0) {
         ElMessage.warning('请输入有效的标签')
         return
     }
+    await addTags(tags)
     ElMessage.success(`成功添加 ${tags.length} 个标签`)
     batchDialogVisible.value = false
+    resetBatchForm()
+    fetchTags(currentPage.value)
 }
 
-// 添加 getCountType 函数
-const getCountType = (count) => {
-    if (count > 10) return 'danger'
-    if (count > 5) return 'warning'
-    return 'info'
-}
+// 修改 getTagStyle 函数
+const getTagStyle = (color) => {
+    // 将颜色转换为 RGB 值
+    const rgb = color.replace(/^#/, '').match(/.{2}/g)
+        ?.map(x => parseInt(x, 16))
+        .join(',');
+
+    return {
+        '--tag-color': rgb,
+        borderColor: color
+    };
+};
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .tags-manage {
+    height: 100%;
+    width: 100%;
     padding: 20px;
 }
 
@@ -309,6 +377,40 @@ const getCountType = (count) => {
     color: var(--el-text-color-secondary);
 }
 
+.search-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--el-bg-color-overlay);
+    border-radius: 8px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+
+    .el-input {
+        max-width: 300px;
+    }
+
+    .date-picker {
+        width: 360px;
+    }
+
+    .el-button {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 16px;
+
+        .el-icon {
+            margin-right: 4px;
+        }
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+    }
+}
+
 .tags-card {
     transition: all 0.3s;
 }
@@ -321,14 +423,35 @@ const getCountType = (count) => {
     display: flex;
     align-items: center;
     gap: 8px;
-}
 
-.count-badge {
-    transition: all 0.3s;
-}
+    .color-block {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
 
-.count-badge:hover {
-    transform: scale(1.1);
+        &:hover {
+            transform: scale(1.2);
+        }
+    }
+
+    .el-tag {
+        background-color: var(--el-color-primary-light-9);
+        border-color: var(--el-color-primary-light-8);
+        color: var(--el-color-primary);
+
+        &.el-tag--plain {
+            background-color: transparent;
+            border-color: currentColor;
+
+            &[style*="background-color"] {
+                background-color: rgba(var(--tag-color), 0.1) !important;
+                color: rgb(var(--tag-color)) !important;
+                border: 1px solid rgba(var(--tag-color), 0.2) !important;
+            }
+        }
+    }
 }
 
 .time-cell {
@@ -394,6 +517,22 @@ const getCountType = (count) => {
         flex-direction: column;
         gap: 4px;
     }
+
+    .search-bar {
+        flex-direction: column;
+        padding: 12px;
+
+        .el-input,
+        .date-picker {
+            width: 100%;
+            max-width: none;
+        }
+
+        .el-button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
 }
 
 @media screen and (max-width: 576px) {
@@ -411,6 +550,140 @@ const getCountType = (count) => {
         width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* 保持现有样式不变，添加以下暗色模式样式 */
+.dark {
+    .tags-manage {
+        background-color: #111827;
+    }
+
+    .title {
+        color: #e5e7eb;
+    }
+
+    .subtitle {
+        color: #9ca3af;
+    }
+
+    .search-bar {
+        background-color: #1f2937;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .tags-card {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        &:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    .tag-name {
+        .color-block {
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .el-tag {
+            background-color: rgba(var(--el-color-primary-rgb), 0.1);
+            border-color: rgba(var(--el-color-primary-rgb), 0.2);
+            color: var(--el-color-primary-light-3);
+
+            &.el-tag--plain {
+                background-color: transparent;
+
+                &[style*="background-color"] {
+                    color: var(--el-text-color-primary) !important;
+                    background-color: rgba(255, 255, 255, 0.1) !important;
+                    border-color: currentColor;
+                }
+            }
+        }
+    }
+
+    .time-cell {
+        color: #9ca3af;
+    }
+
+    :deep(.el-table) {
+        background-color: #1f2937;
+        color: #d1d5db;
+
+        th.el-table__cell {
+            background-color: #374151;
+        }
+
+        .el-table__cell {
+            border-color: #374151;
+        }
+
+        tr:hover>td.el-table__cell {
+            background-color: #374151;
+        }
+    }
+
+    :deep(.el-switch__core) {
+        background-color: #4b5563;
+
+        .el-switch__action {
+            background-color: #d1d5db;
+        }
+    }
+
+    .tag-dialog {
+        :deep(.el-dialog) {
+            background-color: #1f2937;
+        }
+
+        :deep(.el-dialog__header) {
+            border-color: #374151;
+        }
+
+        :deep(.el-dialog__body) {
+            color: #d1d5db;
+        }
+
+        :deep(.el-form-item__label) {
+            color: #d1d5db;
+        }
+
+        :deep(.el-input__wrapper) {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+
+        :deep(.el-textarea__inner) {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+
+        .color-preview {
+            border-color: #4b5563;
+        }
+
+        .form-tip {
+            color: #9ca3af;
+        }
+    }
+
+    .recognized-tags {
+        :deep(.el-tag) {
+            background-color: var(--el-bg-color-overlay);
+            border-color: var(--border-color);
+            color: var(--el-text-color-primary);
+
+            .el-tag__close {
+                color: var(--el-text-color-secondary);
+
+                &:hover {
+                    background-color: var(--hover-bg);
+                    color: var(--el-text-color-primary);
+                }
+            }
+        }
     }
 }
 </style>

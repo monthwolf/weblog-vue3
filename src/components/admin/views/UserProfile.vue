@@ -35,11 +35,11 @@
                         </div>
                         <div class="info-item">
                             <span class="label">邮箱</span>
-                            <span class="value">{{ userInfo.email }}</span>
+                            <span class="value">{{ userInfo.email || '未填写' }}</span>
                         </div>
                         <div class="info-item">
                             <span class="label">注册时间</span>
-                            <span class="value">{{ userInfo.registeredAt }}</span>
+                            <span class="value">{{ userInfo.createTime }}</span>
                         </div>
                     </div>
                 </div>
@@ -54,12 +54,12 @@
                     <h2>编辑资料</h2>
                 </div>
                 <div class="card-content">
-                    <el-form :model="profileForm" label-position="top">
+                    <el-form :model="profileForm" label-position="top" :rules="profileRules" ref="profileFormRef">
                         <div class="form-grid">
-                            <el-form-item label="昵称">
+                            <el-form-item label="昵称" prop="username">
                                 <el-input v-model="profileForm.username" />
                             </el-form-item>
-                            <el-form-item label="邮箱">
+                            <el-form-item label="邮箱" prop="email">
                                 <el-input v-model="profileForm.email" />
                             </el-form-item>
                         </div>
@@ -193,13 +193,14 @@
                                 <div class="verify-status">
                                     <el-icon :class="[
                                         'status-icon',
-                                        userInfo.isEmailVerified ? 'text-green-500' : 'text-orange-500'
+                                        userInfo.isActive ? 'text-green-500' : 'text-orange-500'
                                     ]">
-                                        <CircleCheck v-if="userInfo.isEmailVerified" />
+                                        <CircleCheck v-if="userInfo.isActive" />
                                         <Warning v-else />
                                     </el-icon>
                                     <div class="status-info">
-                                        <span class="text-gray-700 dark:text-gray-200">{{ userInfo.email }}</span>
+                                        <span class="text-gray-700 dark:text-gray-200">{{ userInfo.email || '未填写'
+                                            }}</span>
                                         <span class="text-sm"
                                             :class="userInfo.isEmailVerified ? 'text-green-500' : 'text-orange-500'">
                                             {{ userInfo.isEmailVerified ? '已验证' : '未验证' }}
@@ -257,7 +258,7 @@
     @apply p-6;
 }
 
-/* 头像部分���式 */
+/* 头像部分 */
 .avatar-section {
     @apply flex flex-col items-center gap-4 mb-6;
 }
@@ -296,7 +297,7 @@
 }
 
 .info-item .value {
-    @apply text-gray-800 font-medium;
+    @apply text-gray-800;
 }
 
 /* 表单样式 */
@@ -337,6 +338,67 @@
     @apply text-sm text-gray-500;
 }
 
+/* 安全设置样式 */
+.security-section {
+    @apply col-span-2;
+}
+
+.security-item {
+    @apply p-4 rounded-lg bg-gray-50;
+}
+
+.security-header {
+    @apply mb-4;
+}
+
+.security-grid {
+    @apply grid gap-6 lg:grid-cols-2;
+}
+
+.security-item {
+    @apply bg-gray-50 rounded-xl p-6 transition-all duration-300;
+}
+
+.security-item:hover {
+    @apply shadow-md transform -translate-y-1;
+}
+
+.security-form {
+    @apply space-y-4;
+}
+
+.security-form :deep(.el-input__wrapper) {
+    @apply bg-white border-0 shadow-sm hover:shadow transition-shadow;
+}
+
+.security-form :deep(.el-input__wrapper.is-focus) {
+    @apply ring-2 ring-purple-200;
+}
+
+.security-button {
+    @apply w-full flex items-center justify-center gap-1 mt-2;
+}
+
+.email-verify-content {
+    @apply mt-6 space-y-4;
+}
+
+.verify-status {
+    @apply flex items-center gap-4 p-4 bg-white rounded-lg;
+}
+
+.status-icon {
+    @apply text-2xl;
+}
+
+.status-info {
+    @apply flex flex-col;
+}
+
+.verify-button {
+    @apply w-full flex items-center justify-center gap-1;
+}
+
 /* 响应式调整 */
 @media (min-width: 1024px) {
     .edit-section {
@@ -358,131 +420,68 @@
     }
 }
 
-/* 暗色模式支持 */
-@media (prefers-color-scheme: dark) {
+/* 移除重复的暗色模式样式，只保留组件特定的暗色样式 */
+.dark {
     .user-profile {
         @apply bg-gray-900;
     }
 
-    .profile-card {
-        @apply bg-gray-800 border-gray-700;
+    /* 特定于用户资料的暗色样式 */
+    .user-role {
+        @apply bg-purple-900/30 text-purple-300;
     }
 
-    .card-header {
-        @apply border-gray-700;
+    .security-form :deep(.el-input__wrapper.is-focus) {
+        @apply ring-purple-900;
     }
 
-    .card-header h2 {
-        @apply text-gray-200;
-    }
-
-    .info-item .label {
-        @apply text-gray-400;
-    }
-
-    .info-item .value {
-        @apply text-gray-200;
-    }
-
-    .stat-item {
+    .password-strength-bar {
         @apply bg-gray-700;
+    }
+
+    /* 数据统计卡片样式 */
+    .stat-item {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+
+        &:hover {
+            background-color: rgba(139, 92, 246, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .el-icon {
+            color: #a78bfa;
+        }
     }
 
     .stat-value {
-        @apply text-gray-200;
+        color: #e5e7eb;
     }
 
     .stat-label {
-        @apply text-gray-400;
+        color: #9ca3af;
     }
 
-    .security-item {
-        @apply bg-gray-700;
+    .stats-header {
+        color: #9ca3af;
     }
-}
 
-.security-section {
-    @apply col-span-2;
-}
+    .stats-number {
+        color: #a78bfa;
+    }
 
-.security-item {
-    @apply p-4 rounded-lg bg-gray-50;
-}
+    .stats-label {
+        color: #9ca3af;
+    }
 
-.security-header {
-    @apply mb-4;
-}
-
-/* 安全设置卡片样式 */
-.security-grid {
-    @apply grid gap-6 lg:grid-cols-2;
-}
-
-.security-item {
-    @apply bg-gray-50 dark:bg-gray-700 rounded-xl p-6 transition-all duration-300;
-}
-
-.security-item:hover {
-    @apply shadow-md transform -translate-y-1;
-}
-
-.security-header {
-    @apply mb-6;
-}
-
-.security-form {
-    @apply space-y-4;
-}
-
-.security-form :deep(.el-input__wrapper) {
-    @apply bg-white dark:bg-gray-600 border-0 shadow-sm hover:shadow transition-shadow;
-}
-
-.security-form :deep(.el-input__wrapper.is-focus) {
-    @apply ring-2 ring-purple-200 dark:ring-purple-900;
-}
-
-.security-button {
-    @apply w-full flex items-center justify-center gap-1 mt-2;
-}
-
-.email-verify-content {
-    @apply mt-6 space-y-4;
-}
-
-.verify-status {
-    @apply flex items-center gap-4 p-4 bg-white dark:bg-gray-600 rounded-lg;
-}
-
-.status-icon {
-    @apply text-2xl;
-}
-
-.status-info {
-    @apply flex flex-col;
-}
-
-.verify-button {
-    @apply w-full flex items-center justify-center gap-1;
-}
-
-/* 响应式调整 */
-@media (max-width: 1024px) {
-    .security-grid {
-        @apply grid-cols-1;
+    .stats-card {
+        &:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
     }
 }
 
-/* 暗色模式额外调整 */
-:deep(.dark) .security-item {
-    @apply bg-gray-800;
-}
-
-:deep(.dark) .verify-status {
-    @apply bg-gray-700;
-}
-
-/* Element Plus ��窗式重写 */
+/* Element Plus 窗式重写 */
 .el-message-box {
     @apply rounded-lg border-0 shadow-xl !important;
 }
@@ -503,14 +502,73 @@
     @apply p-4 border-t border-gray-100 dark:border-gray-700 !important;
 }
 
+/* 基础样式 */
+.el-message-box {
+    @apply rounded-lg border-0 shadow-xl !important;
+}
+
+.el-message-box__header {
+    @apply p-5 border-b border-gray-100 !important;
+}
+
+.el-message-box__title {
+    @apply text-lg font-semibold text-gray-800 !important;
+}
+
+.el-message-box__headerbtn .el-message-box__close {
+    @apply text-gray-500 hover:text-gray-700 !important;
+}
+
+.el-message-box__content {
+    @apply p-5 bg-white text-gray-600 !important;
+}
+
+.el-message-box__btns {
+    @apply p-5 pt-3 flex gap-3 bg-white border-t border-gray-100 !important;
+}
+
+.el-button--default {
+    @apply bg-white text-gray-700 border-gray-300 hover:bg-gray-50 !important;
+}
+
+.el-button--primary {
+    @apply bg-purple-600 text-white border-purple-600 hover:bg-purple-700 hover:border-purple-700 !important;
+}
+
+/* 消息提示样式 */
+.el-message {
+    @apply min-w-[300px] rounded-lg border-0 shadow-lg !important;
+    animation: messageFadeInDown 0.3s ease-out;
+}
+
+.el-message--success {
+    @apply bg-green-50 border-l-4 border-green-500 !important;
+}
+
+.el-message--warning {
+    @apply bg-yellow-50 border-l-4 border-yellow-500 !important;
+}
+
+.el-message--error {
+    @apply bg-red-50 border-l-4 border-red-500 !important;
+}
+
+.el-message--info {
+    @apply bg-blue-50 border-l-4 border-blue-500 !important;
+}
+
 /* 暗色模式适配 */
-html.dark {
+.dark {
     .el-message-box {
         @apply bg-gray-800 !important;
     }
 
     .el-message-box__header {
-        @apply bg-gray-800 !important;
+        @apply border-gray-700 !important;
+    }
+
+    .el-message-box__title {
+        @apply text-gray-100 !important;
     }
 
     .el-message-box__headerbtn .el-message-box__close {
@@ -518,11 +576,11 @@ html.dark {
     }
 
     .el-message-box__content {
-        @apply bg-gray-800 !important;
+        @apply bg-gray-800 text-gray-300 !important;
     }
 
     .el-message-box__btns {
-        @apply bg-gray-800 !important;
+        @apply bg-gray-800 border-gray-700 !important;
     }
 
     .el-button--default {
@@ -532,142 +590,43 @@ html.dark {
     .el-button--primary {
         @apply bg-purple-600 text-white border-purple-600 hover:bg-purple-700 hover:border-purple-700 !important;
     }
-}
 
-/* 消息提示样式优化 */
-.el-message {
-    @apply rounded-lg border-0 shadow-lg !important;
-}
-
-.el-message--success {
-    @apply bg-green-50 dark:bg-green-900/50 !important;
-}
-
-.el-message--warning {
-    @apply bg-yellow-50 dark:bg-yellow-900/50 !important;
-}
-
-.el-message--error {
-    @apply bg-red-50 dark:bg-red-900/50 !important;
-}
-
-.el-message--info {
-    @apply bg-blue-50 dark:bg-blue-900/50 !important;
-}
-
-/* 弹窗动画优化 */
-.el-message-box {
-    animation: messageBoxIn 0.3s ease-out !important;
-}
-
-@keyframes messageBoxIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
+    .el-message {
+        @apply border-l-4 !important;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .el-message--success {
+        @apply bg-green-900/30 !important;
+    }
+
+    .el-message--warning {
+        @apply bg-yellow-900/30 !important;
+    }
+
+    .el-message--error {
+        @apply bg-red-900/30 !important;
+    }
+
+    .el-message--info {
+        @apply bg-blue-900/30 !important;
     }
 }
 
-/* 遮罩层样式优化 */
+/* 遮罩与动画 */
 .v-modal {
-    @apply backdrop-blur-sm bg-black/50 !important;
+    @apply backdrop-blur-sm bg-black/30 !important;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* 弹窗容器样式 */
 .el-message-box__wrapper {
     @apply flex items-center justify-center;
 }
 
 .el-message-box {
-    @apply w-[96%] max-w-md mx-auto rounded-xl border-0 shadow-2xl !important;
+    @apply w-[96%] max-w-md mx-auto !important;
     animation: dialogFadeIn 0.3s ease-out;
 }
 
-/* 弹窗头部样式 */
-.el-message-box__header {
-    @apply p-5 border-b !important;
-}
-
-.el-message-box__title {
-    @apply text-lg font-semibold !important;
-}
-
-.el-message-box__headerbtn {
-    @apply top-5 right-5 !important;
-}
-
-/* 弹窗内容样式 */
-.el-message-box__content {
-    @apply p-5 !important;
-}
-
-.el-message-box__message {
-    @apply text-base leading-relaxed !important;
-}
-
-/* 弹窗按钮样式 */
-.el-message-box__btns {
-    @apply p-5 pt-3 flex gap-3 !important;
-}
-
-.el-message-box__btns .el-button {
-    @apply flex-1 h-10 !important;
-}
-
-/* 消息提示样式 */
-.el-message {
-    @apply min-w-[300px] rounded-lg border-0 shadow-lg !important;
-    animation: messageFadeInDown 0.3s ease-out;
-}
-
-/* 暗色模式适配 */
-.dark .el-message-box {
-    @apply bg-gray-800 !important;
-}
-
-.dark .el-message-box__header {
-    @apply border-gray-700 !important;
-}
-
-.dark .el-message-box__title {
-    @apply text-gray-100 !important;
-}
-
-.dark .el-message-box__content {
-    @apply text-gray-300 !important;
-}
-
-.dark .el-message-box__btns {
-    @apply border-t border-gray-700 !important;
-}
-
-.dark .el-button--default {
-    @apply bg-gray-700 text-gray-200 border-gray-600 !important;
-}
-
-.dark .el-button--default:hover {
-    @apply bg-gray-600 border-gray-500 !important;
-}
-
-.dark .el-button--primary {
-    @apply bg-purple-600 border-purple-600 !important;
-}
-
-.dark .el-button--primary:hover {
-    @apply bg-purple-700 border-purple-700 !important;
-}
-
-/* 遮罩层样式 */
-.v-modal {
-    @apply backdrop-blur-sm !important;
-    animation: fadeIn 0.3s ease-out;
-}
-
-/* 动画效果 */
 @keyframes dialogFadeIn {
     from {
         opacity: 0;
@@ -702,43 +661,6 @@ html.dark {
     }
 }
 
-/* 消息类型样式 */
-.el-message--success {
-    @apply bg-green-50 border-l-4 border-green-500 !important;
-}
-
-.el-message--warning {
-    @apply bg-yellow-50 border-l-4 border-yellow-500 !important;
-}
-
-.el-message--error {
-    @apply bg-red-50 border-l-4 border-red-500 !important;
-}
-
-.el-message--info {
-    @apply bg-blue-50 border-l-4 border-blue-500 !important;
-}
-
-.dark .el-message {
-    @apply border-l-4 !important;
-}
-
-.dark .el-message--success {
-    @apply bg-green-900/30 !important;
-}
-
-.dark .el-message--warning {
-    @apply bg-yellow-900/30 !important;
-}
-
-.dark .el-message--error {
-    @apply bg-red-900/30 !important;
-}
-
-.dark .el-message--info {
-    @apply bg-blue-900/30 !important;
-}
-
 /* 添加日间和夜间模式支持 */
 :deep(.avatar-uploader) {
     background-color: var(--el-bg-color-page);
@@ -746,8 +668,8 @@ html.dark {
 }
 
 :deep(.avatar-hover) {
-    background-color: rgba(0, 0, 0, 0.5);
-    color: #fff;
+    @apply dark:bg-black/50 bg-gray-100/80;
+    @apply dark:text-white text-gray-700;
 }
 
 :deep(.info-item .label) {
@@ -761,11 +683,13 @@ html.dark {
 :deep(.security-item) {
     background-color: var(--el-bg-color-page);
     color: var(--el-text-color-primary);
+    @apply dark:border-gray-700 border-gray-200;
 }
 
 :deep(.verify-status) {
     background-color: var(--el-bg-color-page);
     color: var(--el-text-color-primary);
+    @apply dark:border-gray-700 border-gray-200;
 }
 
 :deep(.status-icon) {
@@ -775,14 +699,13 @@ html.dark {
 :deep(.verify-button) {
     background-color: var(--el-bg-color-page);
     color: var(--el-text-color-primary);
+    @apply hover:bg-gray-100 dark:hover:bg-gray-700;
 }
 
 .password-strength-container {
-    // 排列文字和进度条在同一行
     display: flex;
     align-items: center;
     flex-direction: row;
-    // 进度条和文字之间有间距
     gap: 5px;
     margin-top: 5px;
 }
@@ -806,10 +729,8 @@ html.dark {
 }
 
 .password-strength-bar {
-    // margin-top: 5px;
-    // width: 100%;
     height: 5px;
-    background-color: #e0e0e0;
+    @apply dark:bg-gray-700 bg-gray-200;
     border-radius: 4px;
     overflow: hidden;
 }
@@ -818,16 +739,223 @@ html.dark {
     height: 100%;
     transition: width 0.3s ease, background 0.3s ease;
 }
+
+/* 暗色模式样式 */
+.dark {
+    .user-profile {
+        background-color: #111827;
+    }
+
+    .profile-card {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        &:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    .card-header {
+        border-color: #374151;
+
+        h2 {
+            color: #e5e7eb;
+        }
+
+        .header-icon {
+            color: #a78bfa;
+        }
+    }
+
+    .avatar-section {
+        .avatar-wrapper {
+            background-color: #374151;
+        }
+
+        .avatar-hover {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #e5e7eb;
+        }
+    }
+
+    .user-role {
+        background-color: rgba(139, 92, 246, 0.2);
+        color: #a78bfa;
+    }
+
+    .info-list {
+        .info-item {
+            .label {
+                color: #9ca3af;
+            }
+
+            .value {
+                color: #e5e7eb;
+            }
+        }
+    }
+
+    .security-item {
+        background-color: #1f2937;
+        border: 1px solid #374151;
+
+        &:hover {
+            background-color: #242b38;
+        }
+
+        .security-header {
+            h3 {
+                color: #e5e7eb;
+            }
+
+            p {
+                color: #9ca3af;
+            }
+        }
+    }
+
+    .verify-status {
+        background-color: #374151;
+        border-color: #4b5563;
+
+        .status-info {
+            span:first-child {
+                color: #e5e7eb;
+            }
+        }
+    }
+
+    .security-form {
+        :deep(.el-input__wrapper) {
+            background-color: #374151;
+            border-color: #4b5563;
+
+            &.is-focus {
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            }
+        }
+    }
+
+    .password-strength-container {
+        .password-strength-text {
+            color: #9ca3af;
+        }
+
+        .password-strength-bar {
+            background-color: #374151;
+        }
+    }
+
+    /* 表单相关 */
+    :deep(.el-form-item__label) {
+        color: #e5e7eb;
+    }
+
+    :deep(.el-input__wrapper) {
+        background-color: #374151;
+        border-color: #4b5563;
+
+        input {
+            color: #e5e7eb;
+        }
+    }
+
+    :deep(.el-textarea__wrapper) {
+        background-color: #374151;
+        border-color: #4b5563;
+
+        textarea {
+            color: #e5e7eb;
+        }
+    }
+
+    :deep(.el-cascader) {
+        input {
+            color: #e5e7eb;
+        }
+    }
+
+    :deep(.el-cascader__dropdown) {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        .el-cascader-node {
+            color: #e5e7eb;
+
+            &:not(.is-disabled):hover {
+                background-color: #374151;
+            }
+
+            &.in-active-path,
+            &.is-active {
+                background-color: rgba(139, 92, 246, 0.2);
+            }
+        }
+    }
+
+    /* 按钮样式 */
+    :deep(.el-button) {
+        &.el-button--default {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #e5e7eb;
+
+            &:hover {
+                background-color: #4b5563;
+                border-color: #6b7280;
+            }
+        }
+
+        &.el-button--primary {
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
+            color: #ffffff;
+
+            &:hover {
+                background-color: #7c3aed;
+                border-color: #7c3aed;
+            }
+        }
+    }
+
+    /* 消息��样式 */
+    .el-message-box {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        .el-message-box__title {
+            color: #e5e7eb;
+        }
+
+        .el-message-box__content {
+            color: #d1d5db;
+        }
+
+        .el-message-box__container {
+            background-color: #1f2937;
+        }
+    }
+
+    /* 上传组件样式 */
+    .avatar-uploader {
+        border-color: #4b5563;
+
+        &:hover {
+            border-color: #8b5cf6;
+        }
+
+        .upload-placeholder {
+            color: #9ca3af;
+        }
+    }
+}
 </style>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import {
-    Camera, Message, Location, Timer, Clock, Lock,
-    Document, ChatDotRound, View, Star, User, Edit,
-    Check, CircleCheck, Warning
-} from '@element-plus/icons-vue'
+import { Camera, Edit, User, Lock, Message, CircleCheck, Warning, Check } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 import { changePassword as changePasswordApi } from '@/api/admin/user'
 import { showMessage } from '@/composables/utils'
@@ -846,6 +974,12 @@ const passwordForm = reactive({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
+})
+const profileForm = reactive({
+    username: userInfo.username,
+    email: userInfo.email,
+    location: [],
+    bio: ''
 })
 
 // 密码表单校验规则
@@ -868,7 +1002,13 @@ const passwordRules = {
         }
     ]
 }
-
+// 表单验证规则
+const profileRules = {
+    email: [
+        { required: true, message: '请填写邮箱信息', trigger: 'blur' },
+        { type: 'email', message: '请输入有效的邮箱地址', trigger: ['blur', 'change'] }
+    ]
+}
 // 密码强度相关
 const passwordStrengthPercentage = ref(0)
 const passwordStrengthText = ref('')
@@ -953,8 +1093,12 @@ const changePassword = () => {
 
 // 发送验证邮件
 const sendVerificationEmail = () => {
+    if (!userInfo.email) {
+        ElMessage.error('请先填写邮箱信息')
+        return
+    }
     ElMessageBox.confirm(
-        `确定要向 ${emailVerifyForm.email} 发送验证邮件吗？`,
+        `确定要向 ${userInfo.email} 发送验证邮件吗？`,
         '发送验证邮件',
         {
             confirmButtonText: '发送',
@@ -991,7 +1135,6 @@ const sendVerificationEmail = () => {
         })
     })
 }
-
 // 用户活动统计
 const userStats = reactive({
     articles: 42,
@@ -999,40 +1142,32 @@ const userStats = reactive({
     views: 5672,
     likes: 256
 })
+// 保存个人信息
+const saveProfile = () => {
+    if (!profileFormRef.value) return
+    profileFormRef.value.validate((valid) => {
+        if (valid) {
+            // 模拟保存操作
+            userInfo.username = profileForm.username
+            userInfo.email = profileForm.email
+            userInfo.location = profileForm.location.join(' ')
 
-// 个人信息表单
-const profileForm = reactive({
-    username: userInfo.username,
-    email: userInfo.email,
-    location: [],
-    bio: ''
-})
+            ElMessage.success('个人信息保存成功')
+        } else {
+            ElMessage.error('请填写完整的个人信息')
+        }
+    })
+}
 
-// 位置选择选项
-const locationOptions = [
-    {
-        value: '北京',
-        label: '北京',
-        children: [
-            { value: '海淀区', label: '海淀区' },
-            { value: '朝阳区', label: '朝阳区' }
-        ]
-    },
-    {
-        value: '上海',
-        label: '上海',
-        children: [
-            { value: '浦东新区', label: '浦东新区' },
-            { value: '徐汇区', label: '徐汇区' }
-        ]
-    }
-]
+// 重置表单
+const resetForm = () => {
+    profileForm.username = userInfo.username
+    profileForm.email = userInfo.email
+    profileForm.location = []
+    profileForm.bio = ''
+}
 
 // 头像上传相关
-const uploading = ref(false)
-const uploadProgress = ref(0)
-
-// 头像上传前校验
 const beforeAvatarUpload = (rawFile) => {
     if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
         ElMessage.error('头像只能是 JPG 或 PNG 格式!')
@@ -1045,53 +1180,14 @@ const beforeAvatarUpload = (rawFile) => {
     return true
 }
 
-// 头像上传进度
 const handleAvatarProgress = (event, file) => {
-    uploading.value = true
-    uploadProgress.value = Math.round(event.percent)
+    // ���理头像上传进度
 }
 
-// 头像上传成功
 const handleAvatarSuccess = (response, file) => {
     userInfo.avatar = URL.createObjectURL(file.raw)
-    uploading.value = false
-    uploadProgress.value = 0
     ElMessage.success('头像上传成功')
 }
 
-// 保存个人信息
-const saveProfile = () => {
-    ElMessageBox.confirm(
-        '确定要保存个人信息吗?',
-        '提示',
-        {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-        }
-    ).then(() => {
-        // 模拟保存操作
-        userInfo.username = profileForm.username
-        userInfo.email = profileForm.email
-        userInfo.location = profileForm.location.join(' ')
-
-        ElMessage.success('个人信息保存成功')
-    }).catch(() => {
-        ElMessage.info('已取消保存')
-    })
-}
-
-// 重置表单
-const resetForm = () => {
-    profileForm.username = userInfo.username
-    profileForm.email = userInfo.email
-    profileForm.location = []
-    profileForm.bio = ''
-}
-
-// 页面加载时获取用户信息
-onMounted(() => {
-    // 这里可以添加获取用户信息的接口调用
-    console.log('页面加载，获取用户信息')
-})
+const profileFormRef = ref(null)
 </script>

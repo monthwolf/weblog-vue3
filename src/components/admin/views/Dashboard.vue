@@ -700,4 +700,93 @@ const recentActivities = [
         height: 180px;
     }
 }
+
+/* 现有样式保持不变，添加以下暗色模式样式 */
+.dark {
+    .dashboard {
+        @apply bg-gray-900;
+    }
+
+    .welcome-section {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    }
+
+    .user-card {
+        @apply bg-gray-800/30;
+        backdrop-filter: blur(8px);
+    }
+
+    .data-card {
+        @apply bg-gray-800;
+
+        &:hover {
+            @apply shadow-lg shadow-gray-900/50;
+        }
+    }
+
+    .data-title {
+        @apply text-gray-400;
+    }
+
+    .data-value {
+        @apply text-gray-100;
+    }
+
+    .chart-card {
+        @apply bg-gray-800 border-gray-700;
+
+        .card-header {
+            @apply border-gray-700;
+        }
+    }
+
+    .activity-card {
+        @apply bg-gray-800 border-gray-700;
+    }
+
+    .system-card {
+        @apply bg-gray-800 border-gray-700;
+    }
+
+    .info-item {
+        @apply bg-gray-700/50;
+
+        &:hover {
+            @apply bg-gray-700;
+        }
+    }
+
+    .info-label {
+        @apply text-gray-400;
+    }
+
+    .info-value {
+        @apply text-gray-200;
+    }
+
+    .action-btn {
+        @apply bg-gray-700 border-gray-600 text-gray-200;
+
+        &:hover {
+            @apply bg-gray-600 border-gray-500;
+        }
+    }
+
+    /* 图表相关样式 */
+    :deep(.echarts) {
+        background: transparent !important;
+    }
+
+    :deep(.el-radio-button__inner) {
+        @apply bg-gray-700 border-gray-600 text-gray-300;
+
+        &:hover {
+            @apply bg-gray-600;
+        }
+    }
+
+    :deep(.el-radio-button__original-radio:checked + .el-radio-button__inner) {
+        @apply bg-purple-600 border-purple-600 text-white;
+    }
+}
 </style>

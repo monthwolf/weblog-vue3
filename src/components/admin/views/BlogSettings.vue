@@ -284,4 +284,125 @@ const saveSettings = async () => {
         height: 120px;
     }
 }
+
+/* 保持现有样式不变，添加以下暗色模式样式 */
+.dark {
+    .blog-settings {
+        background-color: #111827;
+    }
+
+    .title {
+        color: #e5e7eb;
+    }
+
+    .subtitle {
+        color: #9ca3af;
+    }
+
+    .settings-card {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        &:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    :deep(.el-tabs__nav-wrap::after) {
+        background-color: #374151;
+    }
+
+    :deep(.el-tabs__item) {
+        color: #9ca3af;
+
+        &.is-active {
+            color: #a78bfa;
+        }
+
+        &:hover {
+            color: #c4b5fd;
+        }
+    }
+
+    :deep(.el-form-item__label) {
+        color: #d1d5db;
+    }
+
+    :deep(.el-input__wrapper) {
+        background-color: #374151;
+        border-color: #4b5563;
+    }
+
+    :deep(.el-textarea__inner) {
+        background-color: #374151;
+        color: #d1d5db;
+    }
+
+    :deep(.el-select__popper) {
+        background-color: #374151;
+        border-color: #4b5563;
+
+        .el-select-dropdown__item {
+            color: #d1d5db;
+
+            &.hover {
+                background-color: #4b5563;
+            }
+        }
+    }
+
+    .logo-uploader {
+        border-color: #4b5563;
+
+        &:hover {
+            border-color: #8b5cf6;
+        }
+    }
+
+    .upload-placeholder {
+        color: #9ca3af;
+    }
+
+    .form-tip {
+        color: #9ca3af;
+    }
+
+    :deep(.el-switch__core) {
+        background-color: #4b5563;
+
+        .el-switch__action {
+            background-color: #d1d5db;
+        }
+    }
+
+    :deep(.el-switch.is-checked .el-switch__core) {
+        background-color: #8b5cf6;
+
+        .el-switch__action {
+            background-color: #ffffff;
+        }
+    }
+
+    .settings-footer {
+        border-color: #374151;
+    }
+
+    :deep(.el-cascader__dropdown) {
+        background-color: #374151;
+        border-color: #4b5563;
+
+        .el-cascader-node {
+            color: #d1d5db;
+
+            &:not(.is-disabled):hover {
+                background-color: #4b5563;
+            }
+
+            &.in-active-path,
+            &.is-active {
+                background-color: rgba(139, 92, 246, 0.2);
+            }
+        }
+    }
+}
 </style>

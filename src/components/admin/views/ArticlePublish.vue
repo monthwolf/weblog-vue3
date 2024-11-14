@@ -124,7 +124,7 @@ import {
     ArrowLeft, DocumentAdd, Position, Picture, Grid, Link,
     Document, View, Plus, Cpu
 } from '@element-plus/icons-vue'
-import { formatDate } from '@/utils/date'
+import { formatDate } from '@/composables/date'
 
 // 编辑器配置
 const editorConfig = {
@@ -213,8 +213,9 @@ const publishArticle = async () => {
 // ... 其他方法实现
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .article-publish {
+    margin-top: 2%;
     height: 100%;
     background-color: var(--el-bg-color-page);
 }
@@ -222,7 +223,6 @@ const publishArticle = async () => {
 .publish-header {
     position: sticky;
     top: 0;
-    z-index: 100;
     padding: 16px 24px;
     background: white;
     border-bottom: 1px solid var(--el-border-color-light);
@@ -245,7 +245,7 @@ const publishArticle = async () => {
 
 .publish-container {
     padding: 20px;
-    min-height: calc(100vh - 64px);
+    // min-height: calc(80vh - 64px);
 }
 
 .edit-card,
@@ -396,5 +396,131 @@ const publishArticle = async () => {
 :deep(.v-md-todo-list) {
     background-color: var(--el-bg-color-page);
     color: var(--el-text-color-primary);
+}
+
+/* 现有样式保持不变，添加以下暗色模式样式 */
+.dark {
+    .article-publish {
+        background-color: #111827;
+    }
+
+    .publish-header {
+        background-color: #1f2937;
+        border-color: #374151;
+
+        .title {
+            color: #e5e7eb;
+        }
+    }
+
+    .edit-card,
+    .setting-card {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+
+    .title-input :deep(.el-input__wrapper) {
+        background-color: #374151;
+
+        .el-input__inner {
+            color: #e5e7eb;
+        }
+    }
+
+    .editor-toolbar {
+        border-color: #374151;
+    }
+
+    .editor-wrapper {
+        border-color: #374151;
+    }
+
+    :deep(.v-md-editor) {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    :deep(.v-md-editor__toolbar) {
+        background-color: #1f2937;
+        border-color: #374151;
+    }
+
+    :deep(.v-md-editor__editor-wrapper) {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    :deep(.v-md-editor__preview) {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+
+    .section-title {
+        color: #e5e7eb;
+    }
+
+    .cover-uploader {
+        border-color: #4b5563;
+
+        &:hover {
+            border-color: #8b5cf6;
+        }
+    }
+
+    .upload-placeholder {
+        color: #9ca3af;
+    }
+
+    .form-tip {
+        color: #9ca3af;
+    }
+
+    :deep(.el-tabs__nav-wrap::after) {
+        background-color: #374151;
+    }
+
+    :deep(.el-tabs__item) {
+        color: #9ca3af;
+
+        &.is-active {
+            color: #a78bfa;
+        }
+
+        &:hover {
+            color: #c4b5fd;
+        }
+    }
+
+    /* 代码块样式 */
+    :deep(.v-md-editor__preview pre) {
+        background-color: #111827 !important;
+    }
+
+    :deep(.v-md-editor__preview code) {
+        background-color: #111827 !important;
+    }
+
+    /* 代码行号样式 */
+    :deep(.line-numbers-mode) {
+        color: #6b7280;
+    }
+
+    /* 代码复制按钮样式 */
+    :deep(.copy-code-btn) {
+        background-color: #1f2937;
+        color: #d1d5db;
+    }
+
+    /* 表情面板样式 */
+    :deep(.v-md-emoji-picker) {
+        background-color: #1f2937;
+        color: #d1d5db;
+    }
+
+    /* 任务列表样式 */
+    :deep(.v-md-todo-list) {
+        background-color: #1f2937;
+        color: #d1d5db;
+    }
 }
 </style>

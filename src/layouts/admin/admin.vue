@@ -10,13 +10,15 @@
 
         <!-- 主容器 -->
         <el-container class="main-wrapper" :style="mainStyle">
-            <el-header height="60px">
-                <f-app-header v-model:is-collapse="isCollapse" :is-mobile="isMobile" />
+            <el-header class="h-1/3">
+                <div>
+                    <f-app-header v-model:is-collapse="isCollapse" :is-mobile="isMobile" />
+                    <f-tag-list ref="tagList" v-model:activeView="currentView" :is-mobile="isMobile" />
+                </div>
             </el-header>
 
-            <el-main>
-                <f-tag-list ref="tagList" v-model:activeView="currentView" :is-mobile="isMobile" />
-                <div class="main-content">
+            <el-main class="h-1/2">
+                <div class="main-content h-4/5">
                     <!-- 为页面使用过渡动画 -->
                     <router-view v-slot="{ Component }">
                         <keep-alive :max="10">
@@ -26,7 +28,7 @@
                 </div>
             </el-main>
 
-            <el-footer height="50px" v-if="!isMobile">
+            <el-footer v-if="!isMobile" class="h-1/6">
                 <f-app-footer :is-mobile="isMobile" />
             </el-footer>
         </el-container>
@@ -201,7 +203,6 @@ provide('addView', (menu) => {
 }
 
 .main-wrapper {
-    min-height: 100vh;
     transition: all 0.3s ease-in-out;
     position: relative;
 }

@@ -43,11 +43,13 @@
                 </button>
                 <!-- 用户名 -->
                 <div v-if="userStore.userInfo.username"
-                    class="text-gray-900 ml-1 mr-1 hover:text-blue-700 flex justify-center gap-2 items-center"
+                    class=" text-gray-900 ml-1 mr-1 hover:text-blue-700 justify-center gap-2 items-center flex"
                     @click="$router.push('/admin/index')">
-                    {{ userStore.userInfo.username }}
+                    <span class="hidden md:flex">
+                        {{ userStore.userInfo.username }}
+                    </span>
                     <el-image :src="userStore.userInfo.avatar || getAssetsFile('default-avatar.png')"
-                        class="w-8 h-8 rounded-full" />
+                        class="w-8 h-8 rounded-full " />
                 </div>
                 <div v-else class="text-gray-900 ml-1 mr-1 hover:text-blue-700" @click="$router.push('/login')">登录</div>
 

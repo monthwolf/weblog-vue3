@@ -77,10 +77,9 @@ const handleCommand = (command) => {
             showModel('确定要退出登录吗？').then(() => {
                 // 处理退出登录逻辑
                 userStore.logout()
-                showMessage('退出登录成功').then(() => {
-                    // 跳转登录页
-                    router.push('/login')
-                })
+                showMessage('退出登录成功')
+                // 跳转登录页
+                router.push('/login')
             })
             break
     }
