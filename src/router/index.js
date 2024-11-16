@@ -6,7 +6,6 @@ import ArticlePublish from '@/components/admin/views/ArticlePublish.vue'
 import ArticleCategory from '@/components/admin/views/ArticleCategory.vue'
 import ArticleTags from '@/components/admin/views/ArticleTags.vue'
 import BlogSettings from '@/components/admin/views/BlogSettings.vue'
-import UserProfile from '@/components/admin/views/UserProfile.vue'
 import Dashboard from '@/components/admin/views/Dashboard.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -70,13 +69,6 @@ const routes = [
                 component: BlogSettings,
                 meta: {
                     title: 'Weblog 博客设置'
-                }
-            },
-            {
-                path: 'settings/profile',
-                component: UserProfile,
-                meta: {
-                    title: 'Weblog 用户设置'
                 }
             }
         ]

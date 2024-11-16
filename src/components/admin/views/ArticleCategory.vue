@@ -216,7 +216,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .category-container {
     padding: 20px;
 }
@@ -244,29 +244,52 @@ onMounted(() => {
     justify-content: flex-end;
 }
 
-/* 暗色模式样式 */
-.dark {
-
-    .search-bar,
-    .category-list {
-        @apply bg-gray-800 text-gray-300;
-    }
-
-    :deep(.el-table) {
-        @apply bg-gray-800 text-gray-300;
-
-        th.el-table__cell {
-            @apply bg-gray-700;
-        }
-
-        .el-table__cell {
-            @apply border-gray-700;
-        }
-    }
-}
-
 .form-tip {
     font-size: 12px;
     color: #909399;
+}
+
+/* 暗色模式样式 */
+:deep(.dark) {
+    .category-container {
+
+        .search-bar,
+        .category-list {
+            @apply bg-gray-800 text-gray-300;
+        }
+
+        .el-table {
+            @apply bg-gray-800 text-gray-300;
+
+            th.el-table__cell {
+                @apply bg-gray-700;
+            }
+
+            .el-table__cell {
+                @apply border-gray-700;
+            }
+        }
+
+        .form-tip {
+            @apply text-gray-400;
+        }
+
+        .el-pagination {
+            @apply bg-gray-800 text-gray-300;
+
+            .btn-prev,
+            .btn-next {
+                @apply bg-gray-700;
+            }
+
+            .el-pager li {
+                @apply bg-gray-700 text-gray-300;
+
+                &.active {
+                    @apply bg-primary-600 text-white;
+                }
+            }
+        }
+    }
 }
 </style>

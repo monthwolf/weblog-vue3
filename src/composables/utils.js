@@ -80,19 +80,9 @@ export const menuList = [
         ]
     },
     {
-        name: "系统设置",
+        name: "博客设置",
         icon: "Setting",
-        path: "/admin/settings",
-        children: [
-            {
-                name: "博客设置",
-                path: "/admin/settings/blog"
-            },
-            {
-                name: "个人信息",
-                path: "/admin/settings/profile"
-            }
-        ]
+        path: "/admin/settings/blog",
     }
 ]
 

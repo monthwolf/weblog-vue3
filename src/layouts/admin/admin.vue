@@ -18,7 +18,7 @@
             </el-header>
 
             <el-main class="h-1/2">
-                <div class="main-content h-4/5">
+                <div class="main-content h-96/100">
                     <!-- 为页面使用过渡动画 -->
                     <router-view v-slot="{ Component }">
                         <keep-alive :max="10">

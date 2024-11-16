@@ -6,6 +6,7 @@ import '@/styles/dark-mode.css'
 import { useTheme } from '@/config/theme'
 
 import * as ElementPlusIconVue from '@element-plus/icons-vue'
+import '@fortawesome/fontawesome-free/css/all.css'
 import { createApp } from 'vue'
 import App from '@/App.vue'
 import pinia from '@/stores'
