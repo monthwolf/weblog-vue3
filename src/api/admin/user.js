@@ -10,6 +10,10 @@ export function getUserInfo() {
     return axios.post("/admin/user/info");
 }
 
+export function getBlogAvatar() {
+    return axios.post("/admin/blog/settings/details")
+}
+
 // 修改密码接口
 export function changePassword(username, oldPassword, password) {
     return axios.post("/admin/password/update", { username, oldPassword, password });

@@ -2,7 +2,6 @@ import Index from '@/pages/frontend/index.vue'
 import Login from '@/pages/admin/login.vue'
 import AdminIndex from '@/pages/admin/index.vue'
 import ArticleList from '@/components/admin/views/ArticleList.vue'
-import ArticlePublish from '@/components/admin/views/ArticlePublish.vue'
 import ArticleCategory from '@/components/admin/views/ArticleCategory.vue'
 import ArticleTags from '@/components/admin/views/ArticleTags.vue'
 import BlogSettings from '@/components/admin/views/BlogSettings.vue'
@@ -41,13 +40,6 @@ const routes = [
                 component: ArticleList,
                 meta: {
                     title: 'Weblog 文章列表'
-                }
-            },
-            {
-                path: 'article/publish',
-                component: ArticlePublish,
-                meta: {
-                    title: 'Weblog 文章发布'
                 }
             },
             {

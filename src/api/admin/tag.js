@@ -54,3 +54,8 @@ export function updateTagStatus(id, status) {
 export function getTagSelectList() {
     return axios.post("/admin/tag/select/list");
 }
+
+// 根据标签名模糊查询
+export function searchTags(key) {
+    return axios.post("/admin/tag/search", { key })
+}

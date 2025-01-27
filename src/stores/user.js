@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { getUserInfo } from '@/api/admin/user'
+import { getBlogAvatar, getUserInfo } from '@/api/admin/user'
 import { clearToken } from '@/composables/auth'
 import { permissionMap } from '@/composables/utils'
 export const useUserStore = defineStore('user', () => {
@@ -13,6 +13,9 @@ export const useUserStore = defineStore('user', () => {
                     userInfo.value = res.data
                     // 将roles数组中的内容映射为中文
                     userInfo.value.roles = userInfo.value.roles.map(role => permissionMap[role])
+                    getBlogAvatar().then(res => {
+                        userInfo.value.avatar = res.data.avatar
+                    })
                 }
             })
         } catch (error) {

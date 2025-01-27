@@ -71,7 +71,7 @@ const toggleAside = () => {
 const handleCommand = (command) => {
     switch (command) {
         case 'profile':
-            router.push('/admin/settings/profile')
+            router.push('/admin/settings/blog')
             break
         case 'logout':
             showModel('确定要退出登录吗？').then(() => {

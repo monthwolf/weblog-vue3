@@ -66,10 +66,6 @@ export const menuList = [
                 path: "/admin/article/list"
             },
             {
-                name: "发布文章",
-                path: "/admin/article/publish"
-            },
-            {
                 name: "文章分类",
                 path: "/admin/article/category"
             },

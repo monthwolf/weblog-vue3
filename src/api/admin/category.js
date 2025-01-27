@@ -38,4 +38,9 @@ export function deleteCategory(id) {
  */
 export function getCategoryList(params) {
     return axios.post("/admin/category/list", params);
-} 
+}
+
+// 获取分类 select 数据
+export function getCategorySelectList() {
+    return axios.post("/admin/category/select/list")
+}
