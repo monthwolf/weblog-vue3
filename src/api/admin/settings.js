@@ -7,6 +7,8 @@ export function getBlogSettings() {
     return axios.post("/admin/blog/settings/details");
 }
 
+
+
 /**
  * 更新博客基础信息
  * @param {Object} data - 博客设置数据
