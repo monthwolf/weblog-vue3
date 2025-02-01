@@ -1,4 +1,5 @@
 <template>
+
     <nav class="bg-white border-gray-200 border-b dark:bg-gray-900">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <!-- 博客 LOGO 、博客名称 -->
@@ -70,7 +71,7 @@
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">进入后台</a>
                             </li>
                             <li>
-                                <a href="#"
+                                <a @click="logout"
                                     class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">退出登录</a>
                             </li>
                         </ul>
@@ -127,9 +128,10 @@
 import { onMounted } from "vue";
 import { initCollapses, initDropdowns } from "flowbite";
 import { useUserStore } from "@/stores/user";
-import { getAssetsFile } from "@/composables/utils";
+import { getAssetsFile, showModel } from "@/composables/utils";
 import { useBlogSettingsStore } from "@/stores/bloginfo";
 import { useRouter, useRoute } from 'vue-router'
+
 
 const userStore = useUserStore();
 const blogSettingsStore = useBlogSettingsStore();
@@ -144,4 +146,13 @@ onMounted(() => {
 
 // 当前路由地址
 const currPath = ref(route.path)
+
+const logout = () => {
+    showModel('确定要退出登录吗？').then(() => {
+        // 处理退出登录逻辑
+        userStore.logout()
+        showMessage('退出登录成功')
+        location.reload()
+    })
+}
 </script>

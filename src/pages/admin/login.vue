@@ -120,7 +120,7 @@ const onSubmit = () => {
                 if (res.success) {
                     setToken(res.data.token)
                     userStore.setUserInfo()
-                    router.push('/admin/index')
+                    router.back()
                     showMessage('登录成功')
                 } else {
                     let message = res.message

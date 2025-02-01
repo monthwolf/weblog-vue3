@@ -13,6 +13,10 @@ import pinia from '@/stores'
 //引入路由
 import router from '@/router'
 import permission from '@/permission'
+// 图片点击放大
+import 'viewerjs/dist/viewer.css'
+import VueViewer from 'v-viewer'
+
 // 创建Vue应用实例
 const app = createApp(App)
 
@@ -24,6 +28,7 @@ for (const [key, component] of Object.entries(ElementPlusIconVue)) {
 // 使用pinia
 app.use(pinia)
 
+app.use(VueViewer)
 // 挂载路由
 app.use(router).mount('#app')
 

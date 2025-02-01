@@ -19,7 +19,7 @@
           <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
             <li v-for="(article, index2) in archive.articles" :key="index2">
               <a
-                href="#"
+                @click="goArticleDetailPage(article.id,this)"
                 class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <img
@@ -126,6 +126,7 @@ import UserInfoCard from "@/components/frontend/UserInfoCard.vue";
 import TagList from "../../components/frontend/TagList.vue";
 import { getArchivePageList } from "@/api/frontend/archive";
 import { onMounted, ref } from "vue";
+import { goArticleDetailPage } from '@/composables/utils'
 
 // 文章归档
 const archives = ref([]);

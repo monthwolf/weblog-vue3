@@ -16,7 +16,7 @@
                     </h1>
                     <ol v-if="articles && articles.length > 0" class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
                         <li v-for="(article, index) in articles" :key="index">
-                            <a href="#" class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <a @click="goArticleDetailPage(article.id,this)" class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <img class="w-24 h-12 mb-3 mr-3 rounded-lg sm:mb-0" :src="article.cover" />
                                 <div class="text-gray-600 dark:text-gray-400">
                                     <h2 class="text-base font-normal text-gray-900">
@@ -282,6 +282,7 @@ import TagList from "@/components/frontend/TagList.vue";
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getTagArticlePageList } from '@/api/frontend/tag'
+import { goArticleDetailPage } from '@/composables/utils'
 
 const route = useRoute()
 // 文章集合

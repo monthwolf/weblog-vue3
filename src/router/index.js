@@ -12,6 +12,7 @@ import CategoryList from '@/pages/frontend/category-list.vue'
 import CategoryArticleList from '@/pages/frontend/category-article-list.vue'
 import TagList from '@/pages/frontend/tag-list.vue'
 import TagArticleList from '@/pages/frontend/tag-article-list.vue'
+import ArticleDetails from '@/pages/frontend/article-details.vue'
 
 
 
@@ -57,6 +58,13 @@ const routes = [
         component: CategoryArticleList,
         meta: { // meta 信息
             title: 'Weblog 分类文章页'
+        }
+    },
+    {
+        path: '/article/:articleId', // 文章详情页
+        component: ArticleDetails,
+        meta: { // meta 信息
+            title: 'Weblog 详情页'
         }
     },
     {

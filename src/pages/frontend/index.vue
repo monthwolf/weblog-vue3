@@ -12,19 +12,21 @@
                         <div
                             class="bg-white border h-full border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
                             <!-- 文章封面 -->
-                            <a href="#">
+                            <a @click="goArticleDetailPage(article.id)">
                                 <img class="rounded-t-lg h-auto w-full" :src="article.cover" />
                             </a>
                             <div class="p-5">
                                 <!-- 标签 -->
                                 <div class="mb-3">
                                     <span v-for="(tag, tagIndex) in article.tags" :key="tagIndex"
-                                        class="cursor-pointer bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded hover:bg-green-200 hover:text-green-900 dark:bg-green-900 dark:text-green-300">
+                                        @click="goTagArticleListPage(tag.id, tag.name, tag.color)"
+                                        :style="{ color: tag.color }"
+                                        class="cursor-pointer bg-green-100 text-xs font-medium mr-2 px-2.5 py-0.5 rounded hover:bg-green-200 hover:text-green-900 dark:bg-green-900 dark:text-green-300">
                                         {{ tag.name }}
                                     </span>
                                 </div>
                                 <!-- 文章标题 -->
-                                <a href="#">
+                                <a @click="goArticleDetailPage(article.id)">
                                     <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                                         {{ article.title }}</h2>
                                 </a>
@@ -122,11 +124,12 @@ import CategoryList from '@/components/frontend/CategoryList.vue';
 import Footer from '@/components/frontend/Footer.vue';
 import Header from '@/components/frontend/Header.vue'
 import UserInfoCard from '@/components/frontend/UserInfoCard.vue';
-import TagList from '../../components/frontend/TagList.vue';
+import TagList from '@/components/frontend/TagList.vue';
 
 
 import { initTooltips } from 'flowbite'
 import { onMounted } from 'vue'
+import { useRouter } from 'vue-router';
 
 
 
@@ -146,6 +149,8 @@ const total = ref(0)
 // 总共多少页
 const pages = ref(0)
 
+const router = useRouter()
+
 function getArticles(currentNo) {
     // 调用分页接口渲染数据
     getArticlePageList({ current: currentNo, size: size.value }).then((res) => {
@@ -162,6 +167,17 @@ function getArticles(currentNo) {
     })
 }
 getArticles(current.value)
+
+// 跳转文章详情页
+const goArticleDetailPage = (articleId) => {
+    router.push('/article/' + articleId)
+}
+
+// 跳转标签文章列表页
+const goTagArticleListPage = (id, name, color) => {
+    // 跳转时通过 query 携带参数（标签 ID、标签名称）
+    router.push({ path: '/tag/article/list', query: { id, name, color } })
+}
 </script>
 
 <style></style>

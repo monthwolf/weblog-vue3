@@ -2,6 +2,7 @@ import nprogress from 'nprogress';
 import 'element-plus/es/components/message-box/style/css'
 import { useCookies } from '@vueuse/integrations/useCookies';
 
+
 // 消息提示
 export function showMessage(message = '提示内容', type = 'success', customClass = '') {
     return ElMessage({
@@ -143,3 +144,8 @@ export const shortcuts = [
         }
     }
 ]
+
+// 跳转文章详情页
+export const goArticleDetailPage = (articleId, that) => {
+    that.$router.push('/article/' + articleId)
+}
