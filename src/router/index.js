@@ -7,6 +7,13 @@ import ArticleTags from '@/components/admin/views/ArticleTags.vue'
 import BlogSettings from '@/components/admin/views/BlogSettings.vue'
 import Dashboard from '@/components/admin/views/Dashboard.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import ArchiveList from '@/pages/frontend/archive-list.vue'
+import CategoryList from '@/pages/frontend/category-list.vue'
+import CategoryArticleList from '@/pages/frontend/category-article-list.vue'
+import TagList from '@/pages/frontend/tag-list.vue'
+import TagArticleList from '@/pages/frontend/tag-article-list.vue'
+
+
 
 //统一在下面声明所有路由
 const routes = [
@@ -15,6 +22,41 @@ const routes = [
         component: Index,
         meta: {
             title: 'Weblog 首页'
+        }
+    },
+    {
+        path: '/archive/list', // 归档页
+        component: ArchiveList,
+        meta: { // meta 信息
+            title: 'Weblog 归档页'
+        }
+    },
+    {
+        path: '/category/list', // 分类页
+        component: CategoryList,
+        meta: { // meta 信息
+            title: 'Weblog 分类页'
+        }
+    },
+    {
+        path: '/tag/list', // 标签列表页
+        component: TagList,
+        meta: { // meta 信息
+            title: 'Weblog 标签列表页'
+        }
+    },
+    {
+        path: '/tag/article/list', // 标签列表页
+        component: TagArticleList,
+        meta: { // meta 信息
+            title: 'Weblog 标签文章页'
+        }
+    },
+    {
+        path: '/category/article/list', // 分类文章页
+        component: CategoryArticleList,
+        meta: { // meta 信息
+            title: 'Weblog 分类文章页'
         }
     },
     {

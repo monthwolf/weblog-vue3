@@ -122,12 +122,12 @@ import CategoryList from '@/components/frontend/CategoryList.vue';
 import Footer from '@/components/frontend/Footer.vue';
 import Header from '@/components/frontend/Header.vue'
 import UserInfoCard from '@/components/frontend/UserInfoCard.vue';
-
+import TagList from '../../components/frontend/TagList.vue';
 
 
 import { initTooltips } from 'flowbite'
 import { onMounted } from 'vue'
-import TagList from '../../components/frontend/TagList.vue';
+
 
 
 // initialize components based on data attribute selectors
