@@ -32,6 +32,7 @@
                 </span>
                 <template #dropdown>
                     <el-dropdown-menu>
+                        <el-dropdown-item @click="handleCommand('front')">返回前台</el-dropdown-item>
                         <el-dropdown-item @click="handleCommand('profile')">个人信息</el-dropdown-item>
                         <el-dropdown-item @click="handleCommand('logout')">退出登录</el-dropdown-item>
                     </el-dropdown-menu>
@@ -70,6 +71,9 @@ const toggleAside = () => {
 
 const handleCommand = (command) => {
     switch (command) {
+        case 'front':
+            router.push('/')
+            break
         case 'profile':
             router.push('/admin/settings/blog')
             break

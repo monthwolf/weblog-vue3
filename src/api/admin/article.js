@@ -24,3 +24,4 @@ export function getArticleDetail(id) {
 export function updateArticle(data) {
     return axios.post("/admin/article/update", data)
 }
+
