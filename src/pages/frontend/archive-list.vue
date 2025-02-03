@@ -19,7 +19,7 @@
           <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
             <li v-for="(article, index2) in archive.articles" :key="index2">
               <a
-                @click="goArticleDetailPage(article.id,this)"
+                @click="goArticleDetailPage(article.id, this)"
                 class="items-center block p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <img
@@ -57,61 +57,82 @@
         </div>
 
         <!-- 分页 -->
-                <nav aria-label="Page navigation example" class="mt-10 flex justify-center" v-if="pages > 1">
-                    <ul class="flex items-center -space-x-px h-10 text-base">
-                        <!-- 上一页 -->
-                        <li>
-                            <a @click="getArchives(current - 1)"
-                                class="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current > 1 ? '' : 'cursor-not-allowed']"
-                                >
-
-                                <span class="sr-only">上一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 1 1 5l4 4" />
-                                </svg>
-                            </a>
-                        </li>
-                        <!-- 页码 -->
-                        <li v-for="(pageNo, index) in pages" :key="index">
-                            <a @click="getArchives(pageNo)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight border  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[pageNo == current ? 'text-blue-600  bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700' : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700']"
-                                >
-                                {{ index + 1 }}
-                            </a>
-                        </li>
-                        <!-- 下一页 -->
-                        <li>
-                            <a @click="getArchives(current + 1)"
-                                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                :class="[current < pages ? '' : 'cursor-not-allowed']"
-                                >
-                                <span class="sr-only">下一页</span>
-                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 9 4-4-4-4" />
-                                </svg>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+        <nav
+          aria-label="Page navigation example"
+          class="mt-10 flex justify-center"
+          v-if="pages > 1"
+        >
+          <ul class="flex items-center -space-x-px h-10 text-base">
+            <!-- 上一页 -->
+            <li>
+              <a
+                @click="getArchives(current - 1)"
+                class="flex items-center justify-center px-4 h-10 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                :class="[current > 1 ? '' : 'cursor-not-allowed']"
+              >
+                <span class="sr-only">上一页</span>
+                <svg
+                  class="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 1 1 5l4 4"
+                  />
+                </svg>
+              </a>
+            </li>
+            <!-- 页码 -->
+            <li v-for="(pageNo, index) in pages" :key="index">
+              <a
+                @click="getArchives(pageNo)"
+                class="flex items-center justify-center px-4 h-10 leading-tight border dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                :class="[
+                  pageNo == current
+                    ? 'text-blue-600  bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700'
+                    : 'text-gray-500 border-gray-300 bg-white hover:bg-gray-100 hover:text-gray-700',
+                ]"
+              >
+                {{ index + 1 }}
+              </a>
+            </li>
+            <!-- 下一页 -->
+            <li>
+              <a
+                @click="getArchives(current + 1)"
+                class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                :class="[current < pages ? '' : 'cursor-not-allowed']"
+              >
+                <span class="sr-only">下一页</span>
+                <svg
+                  class="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <!-- 右边侧边栏，占用一列 -->
-      <aside class="col-span-4 md:col-span-1">
-        <!-- 博主信息 -->
-        <UserInfoCard></UserInfoCard>
-
-        <!-- 分类 -->
-        <CategoryList></CategoryList>
-
-        <!-- 标签 -->
-        <TagList></TagList>
-      </aside>
+      <AsideCard></AsideCard>
     </div>
   </main>
 
@@ -119,14 +140,12 @@
 </template>
 
 <script setup>
-import CategoryList from "@/components/frontend/CategoryList.vue";
+import AsideCard from "@/components/frontend/AsideCard.vue";
 import Footer from "@/components/frontend/Footer.vue";
 import Header from "@/components/frontend/Header.vue";
-import UserInfoCard from "@/components/frontend/UserInfoCard.vue";
-import TagList from "../../components/frontend/TagList.vue";
 import { getArchivePageList } from "@/api/frontend/archive";
 import { onMounted, ref } from "vue";
-import { goArticleDetailPage } from '@/composables/utils'
+import { goArticleDetailPage } from "@/composables/utils";
 
 // 文章归档
 const archives = ref([]);

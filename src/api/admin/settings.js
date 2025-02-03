@@ -28,12 +28,11 @@ export function updateBlogSettings(data) {
 
 /**
  * 上传文件
- * @param {File} file - 要上传的文件
+ * @param {FormData} formData - 要上传的文件
  * @returns {Promise} 返回上传结果
  */
-export function uploadFile(file) {
-    const formData = new FormData();
-    formData.append('file', file);
+export function uploadFile(formData) {
+
     return axios.post("/admin/file/upload", formData, {
         headers: {
             'Content-Type': 'multipart/form-data'

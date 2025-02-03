@@ -13,6 +13,7 @@ import CategoryArticleList from '@/pages/frontend/category-article-list.vue'
 import TagList from '@/pages/frontend/tag-list.vue'
 import TagArticleList from '@/pages/frontend/tag-article-list.vue'
 import ArticleDetails from '@/pages/frontend/article-details.vue'
+import NotFound from '@/pages/frontend/404.vue';
 
 
 
@@ -62,6 +63,7 @@ const routes = [
     },
     {
         path: '/article/:articleId', // 文章详情页
+        name: 'article',
         component: ArticleDetails,
         meta: { // meta 信息
             title: 'Weblog 详情页'
@@ -114,7 +116,15 @@ const routes = [
                 }
             }
         ]
-    }
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFound,
+        meta: {
+            title: '404 页'
+        }
+    },
 ]
 
 //创建路由实例
