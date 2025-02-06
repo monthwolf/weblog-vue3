@@ -24,7 +24,9 @@ router.beforeEach((to, from, next) => {
         // 引入博客设置 store
         let blogSettingsStore = useBlogSettingsStore()
         // 获取博客设置信息并保存到全局状态中
-        blogSettingsStore.getBlogSettings()
+        if (blogSettingsStore.blogSettings == null) {
+            blogSettingsStore.getBlogSettings()
+        }
         next()
     } else {
         next()

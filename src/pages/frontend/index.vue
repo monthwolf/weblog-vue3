@@ -7,18 +7,18 @@
       <!-- 左边栏，占用 3 列 -->
       <div class="col-span-4 md:col-span-3 mb-3">
         <!-- 文章列表，grid 表格布局，分为 2 列 -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-3 gap-4">
           <div
             v-for="(article, index) in articles"
             :key="index"
-            class="col-span-2 md:col-span-1"
+            class="col-span-3 md:col-span-1"
           >
             <div
-              class="bg-white border h-full border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
+              class="bg-white border h-auto border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700"
             >
               <!-- 文章封面 -->
               <a @click="goArticleDetailPage(article.id)">
-                <img class="rounded-t-lg h-auto w-full" :src="article.cover" />
+                <img class="rounded-t-lg w-full" :src="article.cover" />
               </a>
               <div class="p-5">
                 <!-- 标签 -->
@@ -86,9 +86,16 @@
                       d="M1 5v11a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H1Zm0 0V2a1 1 0 0 1 1-1h5.443a1 1 0 0 1 .8.4l2.7 3.6H1Z"
                     />
                   </svg>
-                  <a href="#" class="text-gray-400 hover:underline">{{
-                    article.category.name
-                  }}</a>
+                  <a
+                    @click="
+                      goCategoryArticleListPage(
+                        article.category.id,
+                        article.category.name
+                      )
+                    "
+                    class="text-gray-400 hover:underline cursor-pointer"
+                    >{{ article.category.name }}</a
+                  >
                 </p>
               </div>
             </div>
@@ -226,6 +233,11 @@ const goArticleDetailPage = (articleId) => {
 const goTagArticleListPage = (id, name, color) => {
   // 跳转时通过 query 携带参数（标签 ID、标签名称）
   router.push({ path: "/tag/article/list", query: { id, name, color } });
+};
+// 跳转分类文章列表页
+const goCategoryArticleListPage = (id, name) => {
+  // 跳转时通过 query 携带参数（分类 ID、分类名称）
+  router.push({ path: "/category/article/list", query: { id, name } });
 };
 </script>
 

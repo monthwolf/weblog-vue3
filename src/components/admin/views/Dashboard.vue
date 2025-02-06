@@ -23,9 +23,7 @@
       <div class="user-card animate__animated animate__fadeInRight">
         <div class="avatar-wrapper">
           <el-avatar :size="80" :src="userStore.userInfo.avatar">
-            <img
-              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-            />
+            <img src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" />
           </el-avatar>
           <div class="user-status">
             <el-tag size="small" type="success" effect="dark">在线</el-tag>
@@ -47,12 +45,8 @@
     <!-- 数据概览 -->
     <el-row :gutter="20" class="data-overview">
       <el-col :xs="12" :sm="12" :md="6" v-for="item in statistics" :key="item.title">
-        <el-card
-          class="data-card animate__animated animate__zoomIn w-full"
-          shadow="hover"
-          :body-style="{ padding: '10px', width: '100%' }"
-          :style="{ 'animation-delay': item.delay }"
-        >
+        <el-card class="data-card w-full" shadow="hover" :body-style="{ padding: '10px', width: '100%' }"
+          :style="{ 'animation-delay': item.delay }">
           <div class="data-info justify-center">
             <div class="flex flex-row items-center w-full gap-4">
               <div class="data-icon" :style="{ background: item.color }">
@@ -60,26 +54,19 @@
                   <component :is="item.icon"></component>
                 </el-icon>
               </div>
-              <div class="data-title flex-1">{{ item.title }}</div>
-            </div>
-
-            <div class="data-value">
-              <count-up
-                :end-val="Number(item.value)"
-                :duration="2.5"
-                :decimal-places="0"
-                :options="{ separator: ',' }"
-              />
-            </div>
-            <div
-              class="data-trend"
-              :class="item.trend > 0 ? 'up' : 'down'"
-              :style="{ display: item.trend ? '' : 'none' }"
-            >
-              <el-icon>
-                <component :is="item.trend > 0 ? 'ArrowUp' : 'ArrowDown'"></component>
-              </el-icon>
-              {{ Math.abs(item.trend) }}% 较上月
+              <div class="data-title flex-1">
+                {{ item.title }}
+                <div class="data-value">
+                  <CountTo :value="item.value"></CountTo>
+                </div>
+              </div>
+              <div class="data-trend flex-1 animate__animated animate__fadeIn" :class="item.trend > 0 ? 'up' : 'down'"
+                :style="{ display: item.trend ? '' : 'none', 'animation-delay': '1s' }" v-show="item.trend">
+                <el-icon>
+                  <component :is="item.trend > 0 ? 'ArrowUp' : 'ArrowDown'"></component>
+                </el-icon>
+                {{ Math.abs(item.trend) }}% 较上月
+              </div>
             </div>
           </div>
         </el-card>
@@ -131,15 +118,8 @@
           </template>
           <div class="activity-list">
             <el-timeline>
-              <el-timeline-item
-                v-for="(activity, index) in recentActivities"
-                :key="index"
-                :type="activity.type"
-                :color="activity.color"
-                :size="activity.size"
-                :hollow="activity.hollow"
-                :timestamp="activity.time"
-              >
+              <el-timeline-item v-for="(activity, index) in recentActivities" :key="index" :type="activity.type"
+                :color="activity.color" :size="activity.size" :hollow="activity.hollow" :timestamp="activity.time">
                 {{ activity.content }}
               </el-timeline-item>
             </el-timeline>
@@ -158,11 +138,7 @@
             <div class="info-item" v-for="(item, index) in systemInfo" :key="index">
               <div class="info-label">{{ item.label }}</div>
               <div class="info-value">{{ item.value }}</div>
-              <el-progress
-                :percentage="item.percentage"
-                :status="item.status"
-                :stroke-width="8"
-              />
+              <el-progress :percentage="item.percentage" :status="item.status" :stroke-width="8" />
             </div>
           </div>
         </el-card>
@@ -178,14 +154,8 @@
           </div>
         </template>
         <div class="actions-grid">
-          <el-button
-            v-for="action in quickActions"
-            :key="action.name"
-            :type="action.type"
-            :icon="action.icon"
-            class="action-btn"
-            @click="action.handler"
-          >
+          <el-button v-for="action in quickActions" :key="action.name" :type="action.type" :icon="action.icon"
+            class="action-btn" @click="action.handler">
             {{ action.name }}
           </el-button>
         </div>
@@ -195,7 +165,16 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, reactive, onMounted, onUnmounted } from "vue";
+import {
+  ref,
+  computed,
+  inject,
+  reactive,
+  onMounted,
+  onUnmounted,
+  onBeforeMount,
+  watch,
+} from "vue";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
@@ -207,19 +186,16 @@ import {
   GridComponent,
 } from "echarts/components";
 import VChart from "vue-echarts";
-import CountUp from "vue-countup-v3";
-import { useUserStore } from "@/stores/user";
-import { getBaseStatisticsInfo } from "@/api/admin/dashboard";
-import { number } from "echarts";
 
-// 文章总数，默认值为 0
-const articleTotalCount = ref(0);
-// 分类总数
-const categoryTotalCount = ref(0);
-// 标签总数
-const tagTotalCount = ref(0);
-// PV 总访问量
-const pvTotalCount = ref(0);
+import { useUserStore } from "@/stores/user";
+import {
+  getBaseStatisticsInfo,
+  getPvStatistics,
+  getYearArticlePublished,
+  getCategoryArticlesCount,
+} from "@/api/admin/dashboard";
+import { number } from "echarts";
+import CountTo from "@/components/common/CountTo.vue";
 
 const userStore = useUserStore();
 
@@ -269,30 +245,39 @@ const statistics = reactive([
     title: "分类",
     icon: ElementPlusIconsVue.ChatDotRound,
     color: "#67C23A",
-    delay: "0.1s",
+    delay: "0s",
   },
   {
     title: "标签",
     icon: ElementPlusIconsVue.View,
     color: "#E6A23C",
-    delay: "0.2s",
+    delay: "0s",
   },
   {
     title: "访问量",
     icon: ElementPlusIconsVue.User,
     color: "#F56C6C",
-    delay: "0.3s",
+    delay: "0s",
   },
 ]);
 
-getBaseStatisticsInfo().then((res) => {
-  if (res.success) {
-    statistics[0].value = res.data.articleTotalCount;
-    statistics[0].trend = Number((res.data.articlePublishIncreaseRate * 100).toFixed(2));
-    statistics[1].value = res.data.categoryTotalCount;
-    statistics[2].value = res.data.tagTotalCount;
-    statistics[3].value = res.data.pvTotalCount;
-  }
+onBeforeMount(() => {
+  getBaseStatisticsInfo().then((res) => {
+    if (res.success) {
+      statistics[0].value = res.data.articleTotalCount;
+      statistics[0].trend = Number(
+        (res.data.articlePublishIncreaseRate * 100).toFixed(2)
+      );
+      statistics[1].value = res.data.categoryTotalCount;
+      statistics[1].trend = Number(
+        (res.data.categoryPublishIncreaseRate * 100).toFixed(2)
+      );
+      statistics[2].value = res.data.tagTotalCount;
+      statistics[2].trend = Number((res.data.tagPublishIncreaseRate * 100).toFixed(2));
+      statistics[3].value = res.data.pvTotalCount;
+      statistics[3].trend = Number((res.data.pvIncreaseRate * 100).toFixed(2));
+    }
+  });
 });
 // 系统信息
 const systemInfo = [
@@ -324,18 +309,18 @@ const quickActions = [
     icon: ElementPlusIconsVue.Document,
     handler: () =>
       addView({
-        path: "/admin/article/publish",
-        title: "发布文章",
+        path: "/admin/article/list",
+        title: "文章列表",
       }),
   },
   {
-    name: "内容管理",
+    name: "分类管理",
     type: "success",
     icon: ElementPlusIconsVue.Document,
     handler: () =>
       addView({
-        path: "/admin/article/list",
-        title: "文章列表",
+        path: "/admin/article/category",
+        title: "文章分类",
       }),
   },
   {
@@ -349,13 +334,13 @@ const quickActions = [
       }),
   },
   {
-    name: "个人信息",
+    name: "标签管理",
     type: "info",
     icon: ElementPlusIconsVue.User,
     handler: () =>
       addView({
-        path: "/admin/settings/profile",
-        title: "个人信息",
+        path: "/admin/article/tags",
+        title: "标签管理",
       }),
   },
 ];
@@ -390,12 +375,70 @@ const weather = reactive({
 
 // 访问统计图表
 const visitTimeRange = ref("week");
+const visitChartData = reactive({
+  dates: [],
+  pvData: [],
+  articleData: [],
+});
+
+// 获取并处理统计数据
+const fetchStatisticsData = async () => {
+  try {
+    // 并行请求PV统计和文章发布统计
+    const [pvRes, articleRes] = await Promise.all([
+      getPvStatistics(),
+      getYearArticlePublished(),
+    ]);
+
+    if (pvRes.success && articleRes.success) {
+      // 获取完整的一年数据
+      const fullDates = Object.keys(articleRes.data);
+      const fullPvData = pvRes.data.pvCounts;
+      const fullArticleData = fullDates.map((date) => articleRes.data[date] || 0);
+
+      // 根据选择的时间范围截取数据
+      let sliceLength;
+      switch (visitTimeRange.value) {
+        case "week":
+          sliceLength = 7;
+          break;
+        case "month":
+          sliceLength = 30;
+          break;
+        case "year":
+          sliceLength = fullDates.length; // 使用全部数据
+          break;
+      }
+
+      // 从后往前截取数据
+      visitChartData.dates = fullDates.slice(-sliceLength);
+      visitChartData.pvData = fullPvData.slice(-sliceLength);
+      visitChartData.articleData = fullArticleData.slice(-sliceLength);
+    }
+  } catch (error) {
+    console.error("获取统计数据失败:", error);
+  }
+};
+
+// 监听时间范围变化
+watch(visitTimeRange, () => {
+  fetchStatisticsData();
+});
+
+// 访问统计图表配置
 const visitChartOption = computed(() => ({
   tooltip: {
     trigger: "axis",
+    formatter: function (params) {
+      let result = params[0].axisValue + "<br/>";
+      params.forEach((param) => {
+        result += `${param.seriesName}: ${param.value}<br/>`;
+      });
+      return result;
+    },
   },
   legend: {
-    data: ["访问量", "用户量"],
+    data: ["访问量", "文章发布量"],
   },
   grid: {
     left: "3%",
@@ -406,7 +449,21 @@ const visitChartOption = computed(() => ({
   xAxis: {
     type: "category",
     boundaryGap: false,
-    data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+    data: visitChartData.dates,
+    axisLabel: {
+      formatter: (value) => {
+        // 根据时间范围调整日期显示格式
+        const date = new Date(value);
+        switch (visitTimeRange.value) {
+          case "week":
+            return `${date.getMonth() + 1}/${date.getDate()}`;
+          case "month":
+            return `${date.getMonth() + 1}/${date.getDate()}`;
+          case "year":
+            return `${date.getMonth() + 1}月`;
+        }
+      },
+    },
   },
   yAxis: {
     type: "value",
@@ -416,37 +473,105 @@ const visitChartOption = computed(() => ({
       name: "访问量",
       type: "line",
       smooth: true,
-      data: [120, 132, 101, 134, 90, 230, 210],
+      data: visitChartData.pvData,
+      itemStyle: {
+        color: "#409EFF",
+      },
+      areaStyle: {
+        color: {
+          type: "linear",
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            {
+              offset: 0,
+              color: "rgba(64,158,255,0.2)",
+            },
+            {
+              offset: 1,
+              color: "rgba(64,158,255,0)",
+            },
+          ],
+        },
+      },
     },
     {
-      name: "用户量",
+      name: "文章发布量",
       type: "line",
       smooth: true,
-      data: [220, 182, 191, 234, 290, 330, 310],
+      data: visitChartData.articleData,
+      itemStyle: {
+        color: "#67C23A",
+      },
+      areaStyle: {
+        color: {
+          type: "linear",
+          x: 0,
+          y: 0,
+          x2: 0,
+          y2: 1,
+          colorStops: [
+            {
+              offset: 0,
+              color: "rgba(103,194,58,0.2)",
+            },
+            {
+              offset: 1,
+              color: "rgba(103,194,58,0)",
+            },
+          ],
+        },
+      },
     },
   ],
 }));
 
-// 分类统计图表
+// 在组件挂载时获取初始数据
+onMounted(() => {
+  fetchStatisticsData();
+});
+
+// 分类统计数据
+const categoryData = ref([]);
+
+// 获取分类统计数据
+const fetchCategoryData = async () => {
+  try {
+    const res = await getCategoryArticlesCount();
+    if (res.success) {
+      categoryData.value = res.data.map((item) => ({
+        value: item.count,
+        name: item.categoryName,
+      }));
+    }
+  } catch (error) {
+    console.error("获取分类统计数据失败:", error);
+  }
+};
+
+// 分类统计图表配置
 const categoryChartOption = computed(() => ({
   tooltip: {
     trigger: "item",
+    formatter: "{b}: {c} ({d}%)",
   },
   legend: {
     orient: "vertical",
     left: "left",
+    type: "scroll",
+    textStyle: {
+      overflow: "truncate",
+      width: 100,
+    },
   },
   series: [
     {
       name: "文章分类",
       type: "pie",
       radius: "50%",
-      data: [
-        { value: 1048, name: "技术博客" },
-        { value: 735, name: "生活随笔" },
-        { value: 580, name: "项目分享" },
-        { value: 484, name: "学习笔记" },
-      ],
+      data: categoryData.value,
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
@@ -454,9 +579,18 @@ const categoryChartOption = computed(() => ({
           shadowColor: "rgba(0, 0, 0, 0.5)",
         },
       },
+      label: {
+        show: true,
+        formatter: "{b}: {c}篇",
+      },
     },
   ],
 }));
+
+// 在组件挂载时获取数据
+onMounted(() => {
+  fetchCategoryData();
+});
 
 // 最近活动
 const recentActivities = [
@@ -484,7 +618,7 @@ const recentActivities = [
 ];
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .dashboard {
   animation: fadeIn 0.8s ease-out;
 }
