@@ -1,18 +1,32 @@
 # weblog-vue3
 
-Springboot博客项目前端，后端见[https://github.com/monthwolf/weblog-springboot](https://github.com/monthwolf/weblog-springboot/tree/master)
+个人博客的前端，使用 **Vue3+ElementPlus+Pinia+TailwindCSS+VueRouter** 搭建
 
 # 页面展示
-## 前台框架
-![image](https://github.com/user-attachments/assets/b885b522-3dbb-4373-821b-3e7ffe664c8c)
-
-## 后台首页
-![后台首页](https://github.com/user-attachments/assets/b6cb30a3-90a0-454f-b4d3-9fd9f4ad8167)
-## 后台功能
-1. 标签管理
-   ![image](https://github.com/user-attachments/assets/2bbe1597-560a-4b66-82af-53a379bc729a)
-2. 分类管理
-   ![image](https://github.com/user-attachments/assets/2f0e266b-2317-4a84-91bb-776177cb779a)
-
-
+## 前台
+- 主页
+  ![alt text](展示/主页.png)
+- 分类
+  ![alt text](展示/分类.png)
+- 标签
+  ![alt text](展示/标签.png)
+- 归档
+  ![alt text](展示/归档.png)
+- 文章详细
+  ![alt text](展示/文章详细.png)
+## 后台
+- 后台主页
+  ![alt text](展示/后台主页.png)
+- 文章编辑器
+  ![alt text](展示/文章编辑器.png)
+- 文章列表
+  ![alt text](展示/文章列表.png)
+- 文章分类
+  ![alt text](展示/文章分类.png)
+- 标签管理
+  ![alt text](展示/标签管理.png)
+- 博客设置
+  ![alt text](展示/博客设置.png)
+- （没完成的）暗色模式
+  ![alt text](展示/暗了但还没完全暗的暗色主题.png)
   
