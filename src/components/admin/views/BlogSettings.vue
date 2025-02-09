@@ -341,8 +341,7 @@ const iconMap = {
   gitee: "icon-gitee",
   csdn: "icon-csdn",
   zhihu: "icon-zhihu",
-};
-
+}
 // 获取设置数据
 const fetchSettings = async () => {
   try {

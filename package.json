@@ -11,6 +11,7 @@
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@fortawesome/fontawesome-free": "^6.6.0",
+    "@highlightjs/vue-plugin": "^2.1.0",
     "@kangc/v-md-editor": "^2.3.18",
     "@vueuse/integrations": "^11.2.0",
     "animate.css": "^4.1.1",
@@ -21,6 +22,7 @@
     "flowbite": "^2.5.2",
     "gsap": "^3.12.7",
     "highlight.js": "^11.11.1",
+    "highlightjs-vue": "^1.0.0",
     "markdown-it": "^14.1.0",
     "md-editor-v3": "^5.0.2",
     "nprogress": "^0.2.0",
@@ -41,6 +43,7 @@
     "postcss": "^8.4.47",
     "sass-embedded": "^1.80.6",
     "tailwindcss": "^3.4.14",
+    "terser": "^5.38.1",
     "unplugin-auto-import": "^0.18.3",
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.8",

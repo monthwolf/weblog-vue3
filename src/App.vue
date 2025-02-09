@@ -1,8 +1,3 @@
-<script setup>
-import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
-const locale = zhCn
-</script>
-
 <template>
   <!-- 路由视图 -->
   <el-config-provider :locale="locale">
@@ -10,4 +5,8 @@ const locale = zhCn
   </el-config-provider>
 </template>
 
-<style scoped></style>
+<script setup  lang="ts">
+import zhCn from 'element-plus/dist/locale/zh-cn.js'
+const locale = zhCn
+</script>
+

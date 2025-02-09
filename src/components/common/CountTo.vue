@@ -26,6 +26,7 @@ function animateToValue() {
   gsap.to(d, {
     duration: 2,
     num: props.value,
+    
   });
 }
 animateToValue();

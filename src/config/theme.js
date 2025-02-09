@@ -6,11 +6,11 @@ const isDark = ref(false)
 export const useTheme = () => {
     const toggleTheme = () => {
         isDark.value = !isDark.value
-        // 切换 class
+        // 切换 class,
         document.documentElement.classList.toggle('dark', isDark.value)
         // 保存到本地存储
         localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
-        // 同时设置 Element Plus 的主题
+        // 同时设置 暗色 主题
         document.documentElement.style.colorScheme = isDark.value ? 'dark' : 'light'
     }
 

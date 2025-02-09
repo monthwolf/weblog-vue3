@@ -2,7 +2,7 @@ import router from "@/router/index"
 import { getToken } from "@/composables/auth"
 import { showMessage } from "@/composables/utils"
 import { startLoading, closeLoading } from "@/composables/utils"
-import { useBlogSettingsStore } from "./stores/bloginfo"
+import { useBlogSettingsStore } from "../stores/bloginfo"
 
 // 前置路由守卫
 router.beforeEach((to, from, next) => {
@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
         // 引入博客设置 store
         let blogSettingsStore = useBlogSettingsStore()
         // 获取博客设置信息并保存到全局状态中
-        if (blogSettingsStore.blogSettings == null) {
+        if (Object.keys(blogSettingsStore.blogSettings).length == 0) {
             blogSettingsStore.getBlogSettings()
         }
         next()

@@ -22,45 +22,23 @@
       </el-affix>
     </template>
     <!-- label-position="top" 用于指定 label 元素在上面 -->
-    <el-form
-      :model="form"
-      ref="publishArticleFormRef"
-      label-position="top"
-      size="large"
-      :rules="rules"
-    >
+    <el-form :model="form" ref="publishArticleFormRef" label-position="top" size="large" :rules="rules">
       <el-form-item label="标题" prop="title">
-        <el-input
-          v-model="form.title"
-          autocomplete="off"
-          size="large"
-          maxlength="40"
-          show-word-limit
-          clearable
-        />
+        <el-input v-model="form.title" autocomplete="off" size="large" maxlength="40" show-word-limit clearable />
       </el-form-item>
       <el-form-item label="内容" prop="content" class="h-1/3">
         <!-- Markdown 编辑器 -->
-        <MdEditor
-          v-model="form.content"
-          editorId="publishArticleEditor"
-          @onUploadImg="onUploadImg"
-          :style="{
+        <MdEditor :transform-img-url="transImg" v-model="form.content" editorId="publishArticleEditor"
+          @onUploadImg="onUploadImg" :style="{
             minHeight: '500px',
             width: '100%',
             fontSize: '16px',
             paddingBottom: '2%',
-          }"
-        />
+          }" />
       </el-form-item>
       <el-form-item label="封面" prop="cover">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="handleCoverChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
+        <el-upload class="avatar-uploader" action="#" :on-change="handleCoverChange" :auto-upload="false"
+          :show-file-list="false">
           <img v-if="form.cover" :src="form.cover" class="avatar" />
           <el-icon v-else class="avatar-uploader-icon">
             <Plus />
@@ -69,51 +47,20 @@
       </el-form-item>
       <el-form-item label="摘要" prop="summary">
         <!-- :rows="3" 指定 textarea 默认显示 3 行 -->
-        <el-input
-          v-model="form.summary"
-          :rows="3"
-          type="textarea"
-          placeholder="请输入文章摘要"
-        />
+        <el-input v-model="form.summary" :rows="3" type="textarea" placeholder="请输入文章摘要" />
       </el-form-item>
       <el-form-item label="分类" prop="categoryId">
-        <el-select
-          v-model="form.categoryId"
-          clearable
-          placeholder="---请选择---"
-          size="large"
-        >
-          <el-option
-            v-for="item in categories"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id"
-          />
+        <el-select v-model="form.categoryId" clearable placeholder="---请选择---" size="large">
+          <el-option v-for="item in categories" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <span class="w-60">
           <!-- 标签选择 -->
-          <el-select
-            v-model="form.tags"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入文章标签"
-            remote-show-suffix
-            allow-create
-            default-first-option
-            :remote-method="remoteMethod"
-            :loading="tagSelectLoading"
-            size="large"
-          >
-            <el-option
-              v-for="item in tags"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+          <el-select v-model="form.tags" multiple filterable remote reserve-keyword placeholder="请输入文章标签"
+            remote-show-suffix allow-create default-first-option :remote-method="remoteMethod"
+            :loading="tagSelectLoading" size="large">
+            <el-option v-for="item in tags" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </span>
       </el-form-item>
@@ -121,12 +68,7 @@
   </el-dialog>
 
   <!-- 编辑博客 -->
-  <el-dialog
-    v-model="isArticleUpdateEditorShow"
-    :fullscreen="true"
-    :show-close="false"
-    :close-on-press-escape="false"
-  >
+  <el-dialog v-model="isArticleUpdateEditorShow" :fullscreen="true" :show-close="false" :close-on-press-escape="false">
     <template #header="{ close, titleId, titleClass }">
       <!-- 固钉组件，固钉到顶部 -->
       <el-affix :offset="20" style="width: 100%">
@@ -148,44 +90,20 @@
       </el-affix>
     </template>
     <!-- label-position="top" 用于指定 label 元素在上面 -->
-    <el-form
-      :model="updateArticleForm"
-      ref="updateArticleFormRef"
-      label-position="top"
-      size="large"
-      :rules="rules"
-    >
+    <el-form :model="updateArticleForm" ref="updateArticleFormRef" label-position="top" size="large" :rules="rules">
       <el-form-item label="标题" prop="title">
-        <el-input
-          v-model="updateArticleForm.title"
-          autocomplete="off"
-          size="large"
-          maxlength="40"
-          show-word-limit
-          clearable
-        />
+        <el-input v-model="updateArticleForm.title" autocomplete="off" size="large" maxlength="40" show-word-limit
+          clearable />
       </el-form-item>
       <el-form-item label="内容" prop="content">
         <!-- Markdown 编辑器 -->
-        <MdEditor
-          v-model="updateArticleForm.content"
-          @onUploadImg="onUploadImg"
-          editorId="updateArticleEditor"
-        />
+        <MdEditor v-model="updateArticleForm.content" @onUploadImg="onUploadImg" editorId="updateArticleEditor"
+          :transformImgUrl="transImgUrl" />
       </el-form-item>
       <el-form-item label="封面" prop="cover">
-        <el-upload
-          class="avatar-uploader"
-          action="#"
-          :on-change="handleUpdateCoverChange"
-          :auto-upload="false"
-          :show-file-list="false"
-        >
-          <img
-            v-if="updateArticleForm.cover"
-            :src="updateArticleForm.cover"
-            class="avatar"
-          />
+        <el-upload class="avatar-uploader" action="#" :on-change="handleUpdateCoverChange" :auto-upload="false"
+          :show-file-list="false">
+          <img v-if="updateArticleForm.cover" :src="updateArticleForm.cover" class="avatar" />
           <el-icon v-else class="avatar-uploader-icon">
             <Plus />
           </el-icon>
@@ -193,51 +111,20 @@
       </el-form-item>
       <el-form-item label="摘要" prop="summary">
         <!-- :rows="3" 指定 textarea 默认显示 3 行 -->
-        <el-input
-          v-model="updateArticleForm.summary"
-          :rows="3"
-          type="textarea"
-          placeholder="请输入文章摘要"
-        />
+        <el-input v-model="updateArticleForm.summary" :rows="3" type="textarea" placeholder="请输入文章摘要" />
       </el-form-item>
       <el-form-item label="分类" prop="categoryId">
-        <el-select
-          v-model="updateArticleForm.categoryId"
-          clearable
-          placeholder="---请选择---"
-          size="large"
-        >
-          <el-option
-            v-for="item in categories"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id"
-          />
+        <el-select v-model="updateArticleForm.categoryId" clearable placeholder="---请选择---" size="large">
+          <el-option v-for="item in categories" :key="item.id" :label="item.label" :value="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="标签" prop="tags">
         <span class="w-60">
           <!-- 标签选择 -->
-          <el-select
-            v-model="updateArticleForm.tags"
-            multiple
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入文章标签"
-            remote-show-suffix
-            allow-create
-            default-first-option
-            :remote-method="remoteMethod"
-            :loading="tagSelectLoading"
-            size="large"
-          >
-            <el-option
-              v-for="item in tags"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
+          <el-select v-model="updateArticleForm.tags" multiple filterable remote reserve-keyword placeholder="请输入文章标签"
+            remote-show-suffix allow-create default-first-option :remote-method="remoteMethod"
+            :loading="tagSelectLoading" size="large">
+            <el-option v-for="item in tags" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </span>
       </el-form-item>
@@ -248,29 +135,15 @@
     <div class="search-bar animate__animated animate__slideInDown">
       <el-form :inline="true" :model="searchForm" class="search-form">
         <el-form-item label="文章标题">
-          <el-input
-            v-model="searchForm.title"
-            placeholder="请输入文章标题"
-            clearable
-            :prefix-icon="Search"
-          />
+          <el-input v-model="searchForm.title" placeholder="请输入文章标题" clearable :prefix-icon="Search" />
         </el-form-item>
         <el-form-item label="时间范围">
-          <el-date-picker
-            v-model="searchForm.dateRange"
-            type="daterange"
-            range-separator="至"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :shortcuts="dateShortcuts"
-            value-format="YYYY-MM-DD"
-          />
+          <el-date-picker v-model="searchForm.dateRange" type="daterange" range-separator="至" start-placeholder="开始日期"
+            end-placeholder="结束日期" :shortcuts="dateShortcuts" value-format="YYYY-MM-DD" />
         </el-form-item>
         <el-form-item>
           <el-button-group>
-            <el-button type="primary" @click="handleSearch" :icon="Search"
-              >搜索</el-button
-            >
+            <el-button type="primary" @click="handleSearch" :icon="Search">搜索</el-button>
             <el-button @click="resetSearch" :icon="RefreshRight">重置</el-button>
           </el-button-group>
         </el-form-item>
@@ -282,40 +155,19 @@
         <template #header>
           <div class="card-header">
             <span class="header-title">文章列表</span>
-            <el-button
-              type="primary"
-              :icon="Plus"
-              @click="isArticlePublishEditorShow = true"
-              >新增文章</el-button
-            >
+            <el-button type="primary" :icon="Plus" @click="isArticlePublishEditorShow = true">新增文章</el-button>
           </div>
         </template>
 
-        <el-table
-          :data="articleList"
-          style="width: 100%"
-          v-loading="loading"
-          row-key="id"
-          :stripe="true"
-          :border="true"
-          @row-click="handleRowClick"
-        >
+        <el-table :data="articleList" style="width: 100%" v-loading="loading" row-key="id" :stripe="true"
+          :border="true">
           <el-table-column prop="id" label="ID" width="50" />
           <el-table-column prop="cover" label="封面" width="150">
             <template #default="{ row }">
-              <img
-                :src="row.cover"
-                alt="封面"
-                style="width: 100%; height: auto; border-radius: 4px"
-              />
+              <img :src="row.cover" alt="封面" style="width: 100%; height: auto; border-radius: 4px" />
             </template>
           </el-table-column>
-          <el-table-column
-            prop="title"
-            label="标题"
-            min-width="200"
-            show-overflow-tooltip
-          >
+          <el-table-column prop="title" label="标题" min-width="200" show-overflow-tooltip>
             <template #default="{ row }">
               <div class="title-cell">
                 <span class="title-text">{{ row.title }}</span>
@@ -389,16 +241,9 @@
         </el-table>
 
         <div class="pagination-container">
-          <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
-            :page-sizes="[10, 20, 30, 50]"
-            :total="total"
-            :background="true"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
+          <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 30, 50]"
+            :total="total" :background="true" layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
       </el-card>
     </div>
@@ -517,6 +362,14 @@ const fetchArticles = async () => {
     loading.value = false;
   }
 };
+
+// 图片链接处理
+function transImg(t) {
+  if (t == undefined) return t
+  if (t.match(/assets/))
+    return import.meta.env.VITE_FILE_OSS + '/weblog/' + t;
+  return t;
+}
 
 const handleSearch = () => {
   currentPage.value = 1;
@@ -683,11 +536,6 @@ const getTagEffect = (tag) => {
   return Math.random() > 0.5 ? "light" : "dark";
 };
 
-// 行点击处理
-const handleRowClick = (row) => {
-  handlePreview(row.id);
-};
-
 // 添加一个格式化日期的方法
 const formatArticleDate = (date) => {
   if (isToday(date)) {
@@ -775,7 +623,6 @@ const handleUpdateCoverChange = (file) => {
 const formatNumber = (num) => {
   return num >= 1000 ? (num / 1000).toFixed(1) + "k" : num;
 };
-
 onMounted(() => {
   fetchArticles();
 });
@@ -1014,7 +861,7 @@ onMounted(() => {
       @apply border-gray-700;
     }
 
-    tr:hover > td.el-table__cell {
+    tr:hover>td.el-table__cell {
       @apply bg-gray-700;
     }
   }
