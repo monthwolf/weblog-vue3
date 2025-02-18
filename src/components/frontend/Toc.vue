@@ -33,6 +33,15 @@
                   ? 'active py-1 text-sky-600 border-l-2 border-sky-600 font-bold'
                   : 'text-gray-500 font-normal',
               ]">{{ h3.text }}</span>
+              <ul v-if="h3.children && h3.children.length > 0">
+                <li v-for="(h4, index3) in h3.children" :key="index3">
+                  <span @click="scrollToView(h4.offsetTop)" class="pl-16 hover:text-sky-600" :class="[
+                    h4.index == activeHeadingIndex
+                      ? 'active py-1 text-sky-600 border-l-2 border-sky-600 font-bold'
+                      : 'text-gray-500 font-normal',
+                  ]">{{ h4.text }}</span>
+                </li>
+              </ul>
             </li>
           </ul>
         </li>
@@ -114,6 +123,16 @@ function handleContentScroll() {
         if (scrollY >= childOffsetTop) {
           activeHeadingIndex.value = child.index;
         }
+        // 还有四级标题
+        let grandchildren = child.children;
+        if (grandchildren && grandchildren.length > 0) {
+          grandchildren.forEach((gchild) => {
+            let gchildOffsetTop = gchild.offsetTop;
+            if (scrollY >= gchildOffsetTop) {
+              activeHeadingIndex.value = gchild.index;
+            }
+          });
+        }
       });
     }
   });
@@ -125,7 +144,7 @@ onBeforeUnmount(() => window.removeEventListener("scroll", handleContentScroll))
 // 初始化标题数据
 function initTocData(container) {
   // 只提取二级、三级标题
-  let levels = ["h2", "h3"];
+  let levels = ["h2", "h3", "h4"];
   let headings = container.querySelectorAll(levels);
 
   // 存放组装后的目录标题数据
@@ -134,7 +153,7 @@ function initTocData(container) {
   // 下标
   let index = 1;
   headings.forEach((heading) => {
-    // 标题等级， h2 -> 级别 2 ； h3 -> 级别3
+    // 标题等级， h2 -> 级别 2 
     let headingLevel = parseInt(heading.tagName.substring(1));
     // 标题文字
     let headingText = heading.innerText;
@@ -150,10 +169,21 @@ function initTocData(container) {
         offsetTop,
         children: [], // 二级标题下的子标题
       });
-    } else {
+    } else if (headingLevel === 3) {
       // 三级标题
       // 父级标题
       let parentHeading = titlesArr[titlesArr.length - 1];
+      // 设置父级标题的 children
+      parentHeading.children.push({
+        index,
+        level: headingLevel,
+        text: headingText,
+        offsetTop,
+        children: [],
+      });
+    } else {
+      let pArr = titlesArr[titlesArr.length - 1].children;
+      let parentHeading = pArr[pArr.length - 1];
       // 设置父级标题的 children
       parentHeading.children.push({
         index,
